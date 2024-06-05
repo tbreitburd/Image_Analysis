@@ -1,5 +1,5 @@
 """!@file plot_funcs.py
-@brief Python script containing all plotting functions 
+@brief Python script containing all plotting functions
 for the Image Analysis Coursework
 
 @details List of functions
@@ -7,15 +7,14 @@ for the Image Analysis Coursework
 @author T. Breitburd on 04/06/2024"""
 
 
-import numpy as np
+import os
 import matplotlib.pyplot as plt
-from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
 
-# Define the plotting style 
-plt.style.use('seaborn-darkgrid')
+# Define the plotting style
+plt.style.use("seaborn-darkgrid")
 
-def plot_fitted_lines(x, params, ):
+
+def plot_fitted_lines(x, y, params, title, path):
     """!@brief Function to plot the fitted lines for the given parameters
 
     @param x x values, numpy array
@@ -23,7 +22,16 @@ def plot_fitted_lines(x, params, ):
 
     @return None"""
 
-    plt.figure()
-    plt.plot(x, params[0]*x + params[1], label='Line 1')
+    plt.figure(figsize=(5, 4))
+    plt.scatter(x, y, label="Data")
+    plt.plot(x, params[0] * x + params[1], label="Fitted line")
+    plt.title(title)
     plt.legend()
-    plt.show()
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, path)
+    plt.savefig(plot_dir)
