@@ -3,6 +3,7 @@
 
 import numpy as np
 from scipy.optimize import minimize
+from sklearn.linear_model import LinearRegression
 from plot_funcs import plot_fitted_lines
 
 # https://docs.scipy.org/doc/scipy/tutorial/optimize.html#
@@ -61,4 +62,47 @@ plot_fitted_lines(
     result_outlier.x,
     "L1 Fitted line for data with outliers",
     "l1_outlier_data.png",
+)
+
+# ---------------------------
+# Now for L2 minimization
+# ---------------------------
+
+# Fit a linear regression model for the noisy data
+model_noise = LinearRegression()
+model_noise.fit(x.reshape(-1, 1), y_line)
+
+# Fit a linear regression model for the data with outliers
+model_outlier = LinearRegression()
+model_outlier.fit(x.reshape(-1, 1), y_outlier)
+
+# Get the results
+print("---------------------------")
+print("Results for L2 minimization")
+print("---------------------------")
+
+# For the noisy data
+print("For the noisy data:")
+print("a =", model_noise.coef_[0])
+print("b =", model_noise.intercept_)
+
+# For the data with outliers
+print("For the data with outliers:")
+print("a =", model_outlier.coef_[0])
+print("b =", model_outlier.intercept_)
+
+# Plot the results
+plot_fitted_lines(
+    x,
+    y_line,
+    [model_noise.coef_[0], model_noise.intercept_],
+    "L2 Fitted line for noisy data",
+    "l2_noisy_data.png",
+)
+plot_fitted_lines(
+    x,
+    y_outlier,
+    [model_outlier.coef_[0], model_outlier.intercept_],
+    "L2 Fitted line for data with outliers",
+    "l2_outlier_data.png",
 )
