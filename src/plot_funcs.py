@@ -35,3 +35,106 @@ def plot_fitted_lines(x, y, params, title, path):
 
     plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
+
+
+def plot_signal_vector(vector):
+    plt.figure(figsize=(5, 4))
+    plt.stem(vector)
+    plt.title("Measured Signal")
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "q2.2_signal_vector.png")
+    plt.savefig(plot_dir)
+
+
+def plot_riverside(image, title="Riverside Image", path="q3_riverside.png"):
+    """!@brief Function to plot the riverside image
+
+    @param image the image to plot, numpy array
+
+    @return None"""
+
+    plt.figure(figsize=(5, 4))
+    plt.imshow(image, cmap="gray")
+    plt.grid(False)
+    plt.title(title)
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, path)
+    plt.savefig(plot_dir)
+
+
+def plot_daubechies(approx, hori, vert, diag):
+    """!@brief Function to plot the Daubechies wavelet coefficients
+
+    @param approx the approximation coefficients, numpy array
+    @param hori the horizontal detail coefficients, numpy array
+    @param vert the vertical detail coefficients, numpy array
+    @param diag the diagonal detail coefficients, numpy array
+
+    @return None"""
+
+    plt.figure(figsize=(10, 8))
+    plt.subplot(221)
+    plt.imshow(approx, cmap="gray")
+    plt.grid(False)
+    plt.title("Approximation")
+
+    plt.subplot(222)
+    plt.imshow(hori, cmap="gray")
+    plt.grid(False)
+    plt.title("Horizontal Detail Coefficients")
+
+    plt.subplot(223)
+    plt.imshow(vert, cmap="gray")
+    plt.grid(False)
+    plt.title("Vertical Detail Coefficients")
+
+    plt.subplot(224)
+    plt.imshow(diag, cmap="gray")
+    plt.grid(False)
+    plt.title("Diagonal Detail Coefficients")
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "q3_daubechies.png")
+    plt.savefig(plot_dir)
+
+
+def plot_reconstruct_image(im, reconstructed_im):
+    """!@brief Function to plot the reconstructed image
+
+    @param im the original image, numpy array
+    @param reconstructed_im the reconstructed image, numpy array
+
+    @return None"""
+
+    plt.figure(figsize=(10, 8))
+    plt.subplot(121)
+    plt.imshow(im, cmap="gray")
+    plt.grid(False)
+    plt.title("Original Image")
+
+    plt.subplot(122)
+    plt.imshow(reconstructed_im, cmap="gray")
+    plt.grid(False)
+    plt.title("Reconstructed Image")
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "q3_reconstructed_v_orig.png")
+    plt.savefig(plot_dir)
