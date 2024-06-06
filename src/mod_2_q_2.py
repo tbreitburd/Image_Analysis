@@ -50,16 +50,14 @@ data_unif_zf = np.fft.ifft(data_unif, 100) * 4
 data_rand_zf = np.fft.ifft(data_rand, 100) * 4
 
 # OR
-alia_signal = np.fft.ifft(data_unif) * 4
-noisy_signal = np.fft.ifft(data_rand) * 4
+unif_sig = np.fft.ifft(data_unif) * 4
+rand_sig = np.fft.ifft(data_rand) * 4
 
-unif_sig = np.zeros(100, dtype=complex)
-unif_sig[unif_mask] = alia_signal
+alia_signal = np.zeros(100, dtype=complex)
+alia_signal[unif_mask] = unif_sig
 
-rand_sig = np.zeros(100, dtype=complex)
-rand_sig[rand_mask] = noisy_signal
-
-print(data_rand_zf, len(data_rand_zf))
+noisy_signal = np.zeros(100, dtype=complex)
+noisy_signal[rand_mask] = rand_sig
 
 
 # ------------------------------------------
