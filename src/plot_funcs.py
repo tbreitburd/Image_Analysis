@@ -72,7 +72,7 @@ def plot_riverside(image, title="Riverside Image", path="q3_riverside.png"):
     plt.savefig(plot_dir)
 
 
-def plot_daubechies(approx, hori, vert, diag):
+def plot_daubechies(approx, hori, vert, diag, title, path):
     """!@brief Function to plot the Daubechies wavelet coefficients
 
     @param approx the approximation coefficients, numpy array
@@ -103,16 +103,18 @@ def plot_daubechies(approx, hori, vert, diag):
     plt.grid(False)
     plt.title("Diagonal Detail Coefficients")
 
+    plt.suptitle(title)
+
     # Save the plot
     cur_dir = os.getcwd()
     plots_dir = os.path.join(cur_dir, "Plots")
     os.makedirs(plots_dir, exist_ok=True)
 
-    plot_dir = os.path.join(plots_dir, "q3_daubechies.png")
+    plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
 
 
-def plot_reconstruct_image(im, reconstructed_im):
+def plot_reconstruct_image(im, reconstructed_im, path):
     """!@brief Function to plot the reconstructed image
 
     @param im the original image, numpy array
@@ -136,5 +138,5 @@ def plot_reconstruct_image(im, reconstructed_im):
     plots_dir = os.path.join(cur_dir, "Plots")
     os.makedirs(plots_dir, exist_ok=True)
 
-    plot_dir = os.path.join(plots_dir, "q3_reconstructed_v_orig.png")
+    plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
