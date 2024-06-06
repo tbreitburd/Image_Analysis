@@ -210,26 +210,26 @@ plot_reconstruct_image(
 # Plot the difference between the original and reconstructed image
 plot_riverside(
     riverside - reconstructed_15,
-    "Difference between original and reconstructed image (15% threshold)",
+    "Difference between original and \n reconstructed image (15% threshold)",
     "q3_riverside_diff_15.png",
 )
 plot_riverside(
     riverside - reconstructed_20,
-    "Difference between original and reconstructed image (20% threshold)",
+    "Difference between original and \n reconstructed image (20% threshold)",
     "q3_riverside_diff_20.png",
 )
 plot_riverside(
     riverside - reconstructed_10,
-    "Difference between original and reconstructed image (10% threshold)",
+    "Difference between original and \n reconstructed image (10% threshold)",
     "q3_riverside_diff_10.png",
 )
 plot_riverside(
     riverside - reconstructed_5,
-    "Difference between original and reconstructed image (5% threshold)",
+    "Difference between original and \n reconstructed image (5% threshold)",
     "q3_riverside_diff_5.png",
 )
 plot_riverside(
     riverside - reconstructed_2_5,
-    "Difference between original and reconstructed image (2.5% threshold)",
+    "Difference between original and \n reconstructed image (2.5% threshold)",
     "q3_riverside_diff_2_5.png",
 )
