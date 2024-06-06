@@ -61,19 +61,19 @@ def threshold_riverside(threshold, approx, wavelet_coeffs):
 
     LH_thresh = pywt.threshold(
         wavelet_coeffs[0],
-        threshold * np.max(wavelet_coeffs[1][0]),
+        threshold * np.max(wavelet_coeffs[0]),
         mode="hard",
         substitute=0,
     )
     HL_thresh = pywt.threshold(
         wavelet_coeffs[1],
-        threshold * np.max(wavelet_coeffs[1][1]),
+        threshold * np.max(wavelet_coeffs[1]),
         mode="hard",
         substitute=0,
     )
     HH_thresh = pywt.threshold(
         wavelet_coeffs[2],
-        threshold * np.max(wavelet_coeffs[1][2]),
+        threshold * np.max(wavelet_coeffs[2]),
         mode="hard",
         substitute=0,
     )
