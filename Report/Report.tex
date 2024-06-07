@@ -20,6 +20,7 @@
 \usepackage{tikz}
 \usepackage{cite}
 \usepackage{algpseudocode}
+\usepackage{subcaption}
 \usetikzlibrary{shapes.geometric, arrows, positioning}
 
 \tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!30]
@@ -145,11 +146,165 @@
 
 \tableofcontents
 
-\chapter*{Using a Diffusion Model on the MNIST Dataset}
+\chapter*{Introduction}
 
-\chapter{Training a Diffusion Model}
+\chapter{Fundamentals of Image Analysis}
 
-\section{Denoising Diffusion Probabilistic Model (DDPM)}
+\section{Exercise 1.1}
+
+\subsection{Segmentation}
+
+\subsection{Discussion}
+
+\subsection{Self Implementation}
+
+
+\chapter{Inverse Problems and Multiresolution Analysis}
+
+\section{Exercise 2.1}
+
+In this exercise, the solving of ill-posed inverse problems is done for a simple 1D example of fitting a straight line to noisy data. This will be done using a minimisation algorithm of the form:
+
+\begin{equation}
+    \min_{u} ||Au - f||_{l_{n}}
+\end{equation}
+
+Where A is the parameter matrix, u is the measured input, and $l_{n}$ describes the type of distance used to measure the error between the model and the data. Here, A is the vector $[a, b]$, where $a$ is the slope and $b$ is the intercept of the fitted line. And the two choices considered are $l_{1}$ and $l_{2}$ minimisation.
+
+\subsection{\texorpdfstring{$l_{1}$ and $l_{2}$ Minimisation}{l1 and l2 Minimisation}}
+
+As defined, $l_{1}$ minimisation is the minimisation of the sum of the absolute values of the residuals\cite{wiki_lad}, while $l_{2}$ minimisation is the minimisation of the sum of the squares of the residuals\cite{margalit2021method}. Switching to a more explicit notation of this problem, this gives:
+
+\begin{equation}
+    ||(ax + b) - f||_{l_{1}} = \sum_{i=1}^{n} |(ax_{i} + b) - f_{i}|
+\end{equation}
+
+\begin{equation}
+    ||(ax + b) - f||_{l_{2}} = \sqrt{\sum_{i=1}^{n} ((ax_{i} + b) - f_{i})^{2}}
+\end{equation}
+
+The $l_{1}$ minimisation problem is quite uncommon due to it not being differentiable, and resulting in the problem not having an analytical solution.
+
+In this problem, some noisy data was obtained from two files, \texttt{y\_line.txt} and \texttt{y\_outlier\_line.txt}, where the latter has the same data but with one outlier. The data was then fitted with a straight line using the two minimisation methods. For $l_{1}$, the \texttt{scipy.optimise.minimise} function was used using the Sequential Least Squares Programming (SLSQP) method. This is a way to solve the minimizing problem using linear programming, by replacing the original problem with a series of quadratic problems that are easier to solve\cite{mathse_slsqp}. Using this method, the fitted parameters were otbtained and are shown in Table \ref{tab:l1_fits}, and the plots of the fitted lines are shown in Figure \ref{fig:l1_fits}.
+
+\begin{table}
+    \begin{center}
+        \begin{tabular}{ccc}
+            \hline
+            & \textbf{Slope} & \textbf{Intercept} \\
+            \hline
+            \textbf{Noisy Data} & 0.0663 & 0.3092 \\
+            \textbf{Data w/ Outliers} & 0.0662 & 0.3120 \\
+            \hline
+        \end{tabular}
+        \caption{Table of the fitted parameters for the straight line using $l_{1}$ minimisation.}
+        \label{tab:l1_fits}
+    \end{center}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../Plots/l1_noisy_data.png}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../Plots/l1_outlier_data.png}
+    \end{subfigure}
+    \caption{Plots of the fitted straight line to the noisy (left), and outlier (right) data using $l_{1}$ minimisation, assuming the x-coordinate of the data points is the index of the data point.}
+    \label{fig:l1_fits}
+\end{figure}
+
+For $l_{2}$ minimisation, the \texttt{scikit-learn} library was used to fit the data using the \texttt{LinearRegression} class, which uses the Ordinary Least Squares method to fit the data\cite{sklearn_linear_regression}. The fitted parameters were obtained and are shown in Table \ref{tab:l2_fits}, and the plots of the fitted lines are shown in Figure \ref{fig:l2_fits}.
+
+\begin{table}
+    \begin{center}
+        \begin{tabular}{ccc}
+            \hline
+            & \textbf{Slope} & \textbf{Intercept} \\
+            \hline
+            \textbf{Noisy Data} & 0.0665 & 0.2838 \\
+            \textbf{Data w/ Outliers} & 0.0462 & 0.6266 \\
+            \hline
+        \end{tabular}
+        \caption{Table of the fitted parameters for the straight line using $l_{2}$ minimisation.}
+        \label{tab:l2_fits}
+    \end{center}
+\end{table}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../Plots/l2_noisy_data.png}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../Plots/l2_outlier_data.png}
+    \end{subfigure}
+    \caption{Plots of the fitted straight line to the noisy (left), and outlier (right) data using $l_{2}$ minimisation, assuming the x-coordinate of the data points is the index of the data point.}
+    \label{fig:l2_fits}
+\end{figure}
+
+\subsection{Discussion}
+
+It is clear that $l_{1}$ minimisation is more robust to outliers than $l_{2}$ minimisation, as the $l_{1}$ fitted line for the data with outliers is almost identical to the line fitted to the noisy data. Whereas the $l_{2}$ fitted line for the data with outliers differs significantly from the line fitted to the noisy data. This can be explained from the definition of the two minimisation methods, where due to the squaring of the difference in $l_{2}$ minimisation, the effect of outliers on the objective function ($||(ax + b) - f||_{l_{2}}$) is amplified.
+
+\section{Exercise 2.2}
+
+In this exercise, the importance of random undersampling in compressed sensing theory. In order to do this, random and uniform undersampling will be compared in the reconstruction of a noisy signal, by solving:
+
+\begin{equation}
+    \text{arg} \min{(\frac{1}{2}||\mathcal{F}_{\Omega}\hat{x} - y||^{2}_{2} + \lambda |\hat{x}|_{1})}
+\end{equation}
+
+
+Using an iterative soft thresholding algorithm, with a data consistency constraint:
+
+\begin{equation}
+    \hat{f}_{i+1}[j] =
+    \begin{cases}
+        \hat{f}_{i}[j] & \text{if } y[j] = 0 \\
+        y[j] & \text{otherwise}
+    \end{cases}
+\end{equation}
+
+\subsection{Getting undersampled signals}
+
+First, a noisy signal is created. This is done by first creating a zero-filled vector of length 100 and replacing 10 entries by non-zero coefficients between 0 and 1. Gaussian noise, with mean 0 and standard deviation 0.05 is then added to all entries. This results in a noisy vector shown in Figure\ref{fig:noisy_signal}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.2_signal_vector.png}
+    \caption{Plot of the noisy signal.}
+    \label{fig:noisy_signal}
+\end{figure}
+
+
+\subsection{The Iterative Soft Thresholding Algorithm}
+
+\subsection{Discussion}
+
+\section{Exercise 2.3}
+
+\subsection{Daubechies Wavelet Transform}
+
+\subsection{Thresholding Coefficients}
+
+\subsection{Discussion}
+
+
+\chapter{Solving Inverse Problems}
+
+\section{Exercise 3.1}
+
+
+\section{Exercise 3.2}
+
+
+\section{Exercise 3.3}
+
+
+
 
 
 
