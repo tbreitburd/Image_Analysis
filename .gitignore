@@ -5,3 +5,5 @@ Plots/
 Report/*
 !Report/Report.pdf
 !Report/Report.tex
+
+.DS_Store
