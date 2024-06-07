@@ -1,3 +1,7 @@
 test_area.ipynb
 src/__pycache__/
 Plots/
+
+Report/*
+!Report/Report.pdf
+!Report/Report.tex
