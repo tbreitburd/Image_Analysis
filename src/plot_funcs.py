@@ -51,7 +51,7 @@ def plot_signal_vector(vector):
     plt.savefig(plot_dir)
 
 
-def plot_riverside(image, title="Riverside Image", path="q3_riverside.png"):
+def plot_riverside(image, title="Riverside Image", path="q2.3_riverside.png"):
     """!@brief Function to plot the riverside image
 
     @param image the image to plot, numpy array
