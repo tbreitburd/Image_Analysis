@@ -45,20 +45,24 @@ data_unif = vector[unif_mask]
 rand_mask = np.random.choice(range(100), 32, replace=False)
 data_rand = vector[rand_mask]
 
-# Compute the zero-filled inverse FT
-data_unif_zf = np.fft.ifft(data_unif, 100) * 4
-data_rand_zf = np.fft.ifft(data_rand, 100) * 4
-
-# OR
+# Compute the inverse FT and multiply by 4
 unif_sig = np.fft.ifft(data_unif) * 4
 rand_sig = np.fft.ifft(data_rand) * 4
 
+# Zero-fill the signals
 alia_signal = np.zeros(100, dtype=complex)
 alia_signal[unif_mask] = unif_sig
 
 noisy_signal = np.zeros(100, dtype=complex)
 noisy_signal[rand_mask] = rand_sig
 
+# Plot the signals
+plot_signal_vector(
+    np.abs(alia_signal), "Uniformly Undersampled Signal", "q2.2_uniform_signal.png"
+)
+plot_signal_vector(
+    np.abs(noisy_signal), "Randomly Undersampled Signal", "q2.2_random_signal.png"
+)
 
 # ------------------------------------------
 # e) Reconstruct the signal using the ISTA
