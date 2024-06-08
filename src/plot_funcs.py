@@ -37,17 +37,18 @@ def plot_fitted_lines(x, y, params, title, path):
     plt.savefig(plot_dir)
 
 
-def plot_signal_vector(vector):
+def plot_signal_vector(vector, title="Measured Signal", path="q2.2_signal_vector.png"):
     plt.figure(figsize=(5, 4))
     plt.stem(vector)
-    plt.title("Measured Signal")
+    plt.ylim(-0.25, 1)
+    plt.title(title)
 
     # Save the plot
     cur_dir = os.getcwd()
     plots_dir = os.path.join(cur_dir, "Plots")
     os.makedirs(plots_dir, exist_ok=True)
 
-    plot_dir = os.path.join(plots_dir, "q2.2_signal_vector.png")
+    plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
 
 
