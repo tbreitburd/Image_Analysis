@@ -21,6 +21,7 @@
 \usepackage{cite}
 \usepackage{algpseudocode}
 \usepackage{subcaption}
+\usepackage{cleveref}
 \usetikzlibrary{shapes.geometric, arrows, positioning}
 
 \tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!30]
@@ -279,19 +280,139 @@ First, a noisy signal is created. This is done by first creating a zero-filled v
     \label{fig:noisy_signal}
 \end{figure}
 
+The signal is then undersampled using two methods: random and uniform. For random undersampling, 32 entries from the vector are sampled randomly (without repeats). For uniform undersampling, \texttt{numpy.linspace} was used to get 32 regularly spaced samples from the noisy signal. The inverse Fourier Transform of the undersampled signal is computed and then multiplied by 4. The resulting "measured" undersampled signals are shown in Figure \ref{fig:undersampled_signals}.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../Plots/q2.2_random_signal.png}
+        \caption{Random Undersampling}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{../Plots/q2.2_uniform_signal.png}
+        \caption{Uniform Undersampling}
+    \end{subfigure}
+    \caption{Plots of the undersampled signals.}
+    \label{fig:undersampled_signals}
+\end{figure}
+
+With the undersampled signals the goal is now to reconstruct the original signal
+
 
 \subsection{The Iterative Soft Thresholding Algorithm}
+
+In order to reconstruct the original signal, the iterative soft thresholding algorithm is used. This algorithm is an iterative method that solves the  minimisation problem descirbed above by iteratively applying a soft thresholding function to the signal. The algorithm is as follows:
+
+\begin{definitionbox}{Algorithm 1: Iterative Soft Thresholding Algorithm}
+    \begin{algorithmic}[1]
+
+        \State $\hat{X}_{0} \gets y$ \Comment{Initial guess}
+        \For{$i \leq N_{iter}$} \Comment{Iterate $i = 0, 1, \dots, N_{iter}$}
+            \State $\hat{x}_{i} \gets \mathcal{F}^{-1}\hat{X}_{i}$ \Comment{Get an estimate of the signal}
+            \State $\hat{x}_{i} \gets \text{SoftThresh}(\hat{x}_{i}, \lambda)$ \Comment{Apply Soft Thresholding}
+            \State $\hat{X}_{i} \gets \mathcal{F}\hat{x}_{i}$ \Comment{Compute Fourier Transform}
+            \If{$y[j] = 0$} \Comment{Data Consistency Constraint}
+                \State $\hat{X}_{i+1}[j] \gets \hat{X}_{i}[j]$
+            \Else
+                \State $\hat{X}_{i+1}[j] \gets y[j]$
+            \EndIf
+            \State $i \gets i + 1$
+        \EndFor
+        \end{algorithmic}
+    This could also be set up as a while loop, where the algorithm stops when the difference between the current and previous estimate is below a certain threshold, i.e. when it converges
+\end{definitionbox}
+
+
 
 \subsection{Discussion}
 
 \section{Exercise 2.3}
 
+In this exercise, compressed reconstruction is discussed, specifically how images can have sparse representations in the wavelet transform domain. In this case, the wavelet transform used is the Daubechies wavelet transform, and the image is then reconstructed. The process of thresholding the wavelet coefficients is also discussed. In Figure \ref{fig:riverside}, the image studied is shown.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside.png}
+    \caption{The riverside image studied in this exercise.}
+    \label{fig:riverside}
+\end{figure}
+
 \subsection{Daubechies Wavelet Transform}
+
+EXPLAIN THE DAUBECHIES WAVELET TRANSFORM
+
+Once computed, the wavelet coefficients can be visualised as an image, as shown in Figure \ref{fig:wavelet_coefficients}. As can be seen, each describes details of the image at different scales.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies.png}
+    \caption{The Daubechies wavelet transform coefficients of the riverside image.}
+    \label{fig:wavelet_coefficients}
+\end{figure}
+
+One can then reconstruct it using the inverse wavelet transform, and the image is shown in Figure \ref{fig:reconstructed_image}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_reconstructed.png}
+    \caption{The reconstructed riverside image using the Daubechies wavelet transform.}
+    \label{fig:reconstructed_image}
+\end{figure}
+
+And comparing this with the original image (\ref{fig:diff_image}), it can be seen that the reconstruction is quite good, with the main features of the image being preserved. However, one can also see that there is a significant amount of noise in the reconstruction, or indeed in the original image. This is where thresholding comes in.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_diff.png}
+    \caption{The difference between the original and reconstructed riverside images.}
+    \label{fig:diff_image}
+\end{figure}
 
 \subsection{Thresholding Coefficients}
 
+For the second part of this exercise, the task was to threshold the wavelet coefficients, keeping only the largest $P$\% of the coefficients. This is done using the \texttt{pywt.threshold} function from the \texttt{pywavelets} library. The thresholding is done using the hard thresholding method, which is simply defined as:
+
+\begin{equation}
+    \text{HardThresh}(x, \lambda) =
+    \begin{cases}
+        x & \text{if } |x| > \lambda \\
+        0 & \text{otherwise}
+    \end{cases}
+\end{equation}
+
+Thus, this method is used for the top 2.5, 5, 10, 15, and 20\% of the coefficients. The result for the top 15\% threshold is shown in figure \ref{fig:thresholded_image15}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_15.png}
+    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 15\% threshold.}
+    \label{fig:thresholded_image15}
+\end{figure}
+
+For the other thresholds, the results are shown in Figures \ref{fig:thresholded_image20}, \ref{fig:thresholded_image10},  \ref{fig:thresholded_image5}, and \ref{fig:thresholded_image2.5}, in the Appendix. For each of these thresholds, the riverside image was reconstructed and compared to the original image. Again, this is first done for the 15\% threshold, and the results are shown in Figures \ref{fig:reconstructed_image15}, \ref{fig:diff_image15}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_reconstructed_15.png}
+    \caption{The reconstructed riverside image using the thresholded Daubechies wavelet transform coefficients, for a top 15\% threshold.}
+    \label{fig:reconstructed_image15}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_diff_15.png}
+    \caption{The difference between the original and reconstructed riverside images, for a top 15\% threshold.}
+    \label{fig:diff_image15}
+\end{figure}
+
+
+For the other thresholds, the results are shown in Figure \ref{fig:reconstructed_image20}, \ref{fig:reconstructed_image10},  \ref{fig:reconstructed_image5}, and \ref{fig:reconstructed_image2.5}, in the Appendix. The difference between the original and reconstructed images is shown in Figure \ref{fig:diff_image15}.
+
+
 \subsection{Discussion}
 
+As expected, the higher the threshold the less coefficient's information is kept. However, reconstructions stays qualitatively good, and the diff figures show less noise in the reconstructed images. This is because the noise is often in the smaller coefficients, and by thresholding these out, the noise is removed. However, the thresholding also removes some of the detail in the image, as can be seen in the reconstructed images. This is a trade-off that must be considered when thresholding wavelet coefficients.
 
 \chapter{Solving Inverse Problems}
 
@@ -304,9 +425,96 @@ First, a noisy signal is created. This is done by first creating a zero-filled v
 \section{Exercise 3.3}
 
 
+\chapter{Appendix}
+
+\section{README}
+
+\subsection{Extra Plots}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_20.png}
+    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 20\% threshold.}
+    \label{fig:thresholded_image20}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_10.png}
+    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 10\% threshold.}
+    \label{fig:thresholded_image10}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_5.png}
+    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 5\% threshold.}
+    \label{fig:thresholded_image5}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_2_5.png}
+    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 2.5\% threshold.}
+    \label{fig:thresholded_image2.5}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_reconstructed_20.png}
+    \caption{The reconstructed riverside image using the thresholded Daubechies wavelet transform coefficients, for a top 20\% threshold.}
+    \label{fig:reconstructed_image20}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_diff_20.png}
+    \caption{The difference between the original and reconstructed riverside images, for a top 20\% threshold.}
+    \label{fig:diff_image20}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_reconstructed_10.png}
+    \caption{The reconstructed riverside image using the thresholded Daubechies wavelet transform coefficients, for a top 10\% threshold.}
+    \label{fig:reconstructed_image10}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_diff_10.png}
+    \caption{The difference between the original and reconstructed riverside images, for a top 10\% threshold.}
+    \label{fig:diff_image10}
+\end{figure}
 
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_reconstructed_5.png}
+    \caption{The reconstructed riverside image using the thresholded Daubechies wavelet transform coefficients, for a top 5\% threshold.}
+    \label{fig:reconstructed_image5}
+\end{figure}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_diff_5.png}
+    \caption{The difference between the original and reconstructed riverside images, for a top 5\% threshold.}
+    \label{fig:diff_image5}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_reconstructed_2_5.png}
+    \caption{The reconstructed riverside image using the thresholded Daubechies wavelet transform coefficients, for a top 2.5\% threshold.}
+    \label{fig:reconstructed_image2.5}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_diff_2_5.png}
+    \caption{The difference between the original and reconstructed riverside images, for a top 2.5\% threshold.}
+    \label{fig:diff_image2.5}
+\end{figure}
 
 
 
