@@ -7,6 +7,7 @@ This is done by first removing the "corruption" lines
 
 """
 import numpy as np
+import os
 import skimage
 from skimage.restoration import inpaint, rolling_ball
 from skimage.exposure import rescale_intensity
@@ -73,21 +74,64 @@ coins_segmented = closing(coins_segmented, disk(2))
 coins_labelled = label(coins_segmented)
 
 # Convert the labels to RGB
-coins_labelled_rgb = label2rgb(coins_labelled, image=coins_segmented, bg_label=0)
-
-
-fig = plt.figure(figsize=(10, 6))
-plt.imshow(coins_labelled_rgb)
-
-for region in measure.regionprops(coins_labelled):
-    y, x = region.centroid
-    plt.text(
-        x, y, str(region.label), color="red", fontsize=12, ha="center", va="center"
-    )
-
-plt.show()
-
+coins_labelled_rgb = label2rgb(coins_labelled, bg_label=0)
 
 # ----------------------------------------
 # Plot the results
 # ----------------------------------------
+
+# Coins that we want are regioms 7, 16, 23 and 27
+
+
+def plot_segmented_coin(coin_number):
+    # Get the coin region
+    region_props = measure.regionprops(coins_labelled)
+    coin_region = region_props[coin_number - 1]
+
+    # Get the bounding box
+    min_y, min_x, max_y, max_x = coin_region.bbox
+
+    min_y, min_x = max(min_y - 10, 0), max(min_x - 10, 0)
+    max_y, max_x = min(max_y + 10, coins.shape[0]), min(max_x + 10, coins.shape[1])
+
+    # Plot the coin
+    plt.figure(figsize=(6, 6))
+
+    # Plot the steps of the segmentation
+    plt.figure(figsize=(12, 12))
+    plt.subplot(221)
+    plt.imshow(coins[min_y:max_y, min_x:max_x], cmap="gray")
+    plt.title("Original image")
+    plt.axis("off")
+
+    plt.subplot(222)
+    plt.imshow(coins_rescaled[min_y:max_y, min_x:max_x], cmap="gray")
+    plt.title("Inpainted and Rescaled Image")
+    plt.axis("off")
+
+    plt.subplot(223)
+    plt.imshow(coins_no_background[min_y:max_y, min_x:max_x], cmap="gray")
+    plt.title("Background removed")
+    plt.axis("off")
+
+    plt.subplot(224)
+    plt.imshow(coins_labelled_rgb[min_y:max_y, min_x:max_x])
+    plt.title("K-Means Segmentation and Labeling")
+    plt.axis("off")
+
+    plt.suptitle("Coins Segmentation")
+    plt.tight_layout()
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "Coin_Segmentation_" + str(coin_number) + ".png")
+    plt.savefig(plot_dir)
+
+
+# Plot the segmented coins
+plot_segmented_coin(7)
+plot_segmented_coin(16)
+plot_segmented_coin(23)
+plot_segmented_coin(27)
