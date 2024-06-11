@@ -51,12 +51,12 @@ seed2 = tuple(np.argwhere(ct_regions == indices[1])[idx2])
 # ----------------------------------------
 
 # First one
-mask_flood = flood_fill(ct, seed1, new_value=255, tolerance=25)
+mask_flood = flood_fill(ct, seed1, new_value=255, tolerance=30)
 # Then the other
-mask_flood = flood_fill(mask_flood, seed2, new_value=255, tolerance=25)
+mask_flood = flood_fill(mask_flood, seed2, new_value=255, tolerance=30)
 
 # Threshold the image
-threshold = threshold_otsu(mask_flood)
+threshold = 254
 
 binary = mask_flood > threshold
 
@@ -67,19 +67,25 @@ masked = closing(binary, disk(3))
 # Plot the results
 # ------------------ --------------------
 
+plt.style.use("seaborn-v0_8-darkgrid")
+
 fig, ax = plt.subplots(2, 2, figsize=(10, 10))
 
 ax[0, 0].imshow(ct, cmap="gray")
-ax[0, 0].set_title("Original CT")
+ax[0, 0].set_title("(a) Original CT")
+ax[0, 0].grid(False)
 
 ax[0, 1].imshow(ct_regions, cmap="tab20")
-ax[0, 1].set_title("Regions")
+ax[0, 1].set_title("(b) Regions")
+ax[0, 1].grid(False)
 
 ax[1, 0].imshow(mask_flood, cmap="gray")
-ax[1, 0].set_title("Region Growing")
+ax[1, 0].set_title("(c) Region Growing")
+ax[1, 0].grid(False)
 
 ax[1, 1].imshow(masked, cmap="gray")
-ax[1, 1].set_title("Segmented CT")
+ax[1, 1].set_title("(d) Segmented CT")
+ax[1, 1].grid(False)
 
 plt.suptitle("CT Segmentation")
 plt.tight_layout()
@@ -90,3 +96,5 @@ os.makedirs(plots_dir, exist_ok=True)
 
 plot_dir = os.path.join(plots_dir, "CT_Segmentation.png")
 plt.savefig(plot_dir)
+
+plt.close()
