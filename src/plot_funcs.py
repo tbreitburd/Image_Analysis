@@ -11,7 +11,7 @@ import os
 import matplotlib.pyplot as plt
 
 # Define the plotting style
-plt.style.use("seaborn-darkgrid")
+plt.style.use("seaborn-v0_8-darkgrid")
 
 
 def plot_fitted_lines(x, y, params, title, path):
