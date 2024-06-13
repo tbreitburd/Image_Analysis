@@ -1,10 +1,9 @@
 """!@file mod_3_LGD.py
 
-@author T.Breitburd on 12/06/24"""
-
+@author T.Breitburd and Course Instructor on 12/06/24
+"""
 
 import numpy as np
-import matplotlib.pyplot as plt
 import astra
 from skimage.metrics import peak_signal_noise_ratio as compare_psnr
 from skimage.metrics import structural_similarity as compare_ssim
@@ -12,12 +11,14 @@ import torch
 import odl
 import odl.contrib.torch as odl_torch
 from neur_nets import LGD_net
+from plot_funcs import plot_grd_truth_FBP, plot_ADMM_FBP, plot_ADMM_FBP_LGD
 
 astra.test()
 
 # -----------------------------------------------------------
 # Set up the forward operator (ray transform) in ODL
 # -----------------------------------------------------------
+print("Setting up the forward operator in ODL...")
 
 # Reconstruction space: functions on the rectangle [-20, 20]^2
 img_size = 256  # discretized with 256 samples per dimension
@@ -33,7 +34,6 @@ fwd_op_odl = odl.tomo.RayTransform(reco_space, geometry)
 fbp_op_odl = odl.tomo.fbp_op(fwd_op_odl, filter_type="Ram-Lak", frequency_scaling=0.6)
 adj_op_odl = fwd_op_odl.adjoint
 
-
 # Create phantom and noisy projection data in ODL
 phantom_odl = odl.phantom.shepp_logan(reco_space, modified=True)
 data_odl = fwd_op_odl(phantom_odl)
@@ -44,46 +44,37 @@ fbp_odl = fbp_op_odl(data_odl)
 phantom_np = phantom_odl.__array__()
 fbp_np = fbp_odl.__array__()
 data_np = data_odl.__array__()
-print("sinogram size = {}".format(data_np.shape))
+print("Sinogram size = {}".format(data_np.shape))
 
-# display ground-truth and FBP images
-plt.subplot(131)
-plt.imshow(phantom_np.transpose(), cmap="bone")
-plt.xticks([])
-plt.yticks([])
-plt.title("ground-truth")
-
-plt.subplot(132)
-plt.imshow(data_np, cmap="bone")
-plt.xticks([])
-plt.yticks([])
-plt.title("sinogram")
-
-plt.subplot(133)
-plt.imshow(fbp_np.transpose(), cmap="bone")
-plt.xticks([])
-plt.yticks([])
-plt.title("FBP")
+# Compute the PSNR and SSIM between the ground truth and the FBP reconstruction
 data_range = np.max(phantom_np) - np.min(phantom_np)
 psnr_fbp = compare_psnr(phantom_np, fbp_np, data_range=data_range)
 ssim_fbp = compare_ssim(phantom_np, fbp_np, data_range=data_range)
-plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_fbp, ssim_fbp))
-plt.gcf().set_size_inches(9.0, 6.0)
+
+# -----------------------------------------------------------
+# Display the ground truth, FBP reconstruction, and the sinogram
+# -----------------------------------------------------------
+plot_grd_truth_FBP(phantom_np, data_np, fbp_np, data_range, psnr_fbp, ssim_fbp)
 
 
+# -----------------------------------------------------------
 # Let's solve the TV reconstruction problem
 # using the linearized ADMM algorithm (implemented in ODL).
+# -----------------------------------------------------------
+print("Solving the TV reconstruction problem using ADMM...")
 
-# In this example we solve the optimization problem: min_x
-# f(x) + g(Lx) = ||A(x) - y||_2^2 + lam * ||grad(x)||_1,
-# Where ``A`` is a parallel beam ray transform, ``grad`` is the spatial gradient
-# and ``y`` given noisy data.
+# In this example we solve the optimization problem:
+# min_x f(x) + g(Lx) = ||A(x) - y||_2^2 + lam * ||grad(x)||_1,
+# Where:
+# - ``A`` is a parallel beam ray transform,
+# - ``grad`` is the spatial gradient,
+# - ``y`` given noisy data.
 
-# The problem is rewritten in decoupled form as: min_x g(L(x))
+# The problem is rewritten in decoupled form as:
+# min_x g(L(x))
 # with a separable sum ``g`` of functionals and the stacked operator ``L``:
 
-#     g(z) = ||z_1 - g||_2^2 + lam * ||z_2||_1,
-
+# g(z) = ||z_1 - g||_2^2 + lam * ||z_2||_1,
 #                ( A(x)    )
 #     z = L(x) = ( grad(x) ).
 
@@ -102,7 +93,8 @@ g = odl.solvers.SeparableSum(data_fit, reg_func)
 # We don't use the f functional, setting it to zero
 f = odl.solvers.ZeroFunctional(L.domain)
 
-# --- Select parameters and solve using ADMM --- #
+
+# --- Select parameters and solve using ADMM ---
 
 # Estimated operator norm, add 10 percent for some safety margin
 op_norm = 1.1 * odl.power_method_opnorm(L, maxiter=20)
@@ -124,30 +116,7 @@ odl.solvers.admm_linearized(x_admm_odl, f, g, L, tau, sigma, niter, callback=Non
 x_admm_np = x_admm_odl.__array__()
 
 # Let's display the image reconstructed by ADMM and compare it with FBP
-plt.subplot(131)
-plt.imshow(phantom_np.transpose(), cmap="bone")
-plt.xticks([])
-plt.yticks([])
-plt.title("ground-truth")
-
-plt.subplot(132)
-plt.imshow(fbp_np.transpose(), cmap="bone")
-plt.xticks([])
-plt.yticks([])
-plt.title("FBP")
-plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_fbp, ssim_fbp))
-
-
-plt.subplot(133)
-plt.imshow(x_admm_np.transpose(), cmap="bone")
-plt.xticks([])
-plt.yticks([])
-plt.title("TV")
-psnr_tv = compare_psnr(phantom_np, x_admm_np, data_range=data_range)
-ssim_tv = compare_ssim(phantom_np, x_admm_np, data_range=data_range)
-plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_tv, ssim_tv))
-plt.gcf().set_size_inches(9.0, 6.0)
-
+plot_ADMM_FBP(phantom_np, fbp_np, x_admm_np)
 
 # -----------------------------------------------------------
 # Set up the LGD algorithm in PyTorch
@@ -156,7 +125,6 @@ plt.gcf().set_size_inches(9.0, 6.0)
 # Check if a GPU is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
-
 
 # Now, we need to cast the ODL operators as torch operators
 # so that we can integrate them with other learnable units.
@@ -171,62 +139,53 @@ op_norm = 1.1 * odl.power_method_opnorm(fwd_op_odl)
 step_size = 1 / op_norm
 
 
+# Initialize the LGD network
 lgd_net = LGD_net(fwd_op=fwd_op, adj_op=adj_op, step_size=step_size).to(
     device
 )  # realize the network and export it to GPU
+
+# Print the number of learnable parameters in the LGD network
 num_learnable_params = sum(p.numel() for p in lgd_net.parameters() if p.requires_grad)
 print("number of model parameters = {}".format(num_learnable_params))
-y = (
-    torch.from_numpy(data_np).to(device).unsqueeze(0)
-)  # noisy sinogram data as a torch tensor
 
-# initialization for the LGD net. Note that the input to a torch 2D CNN
-# must be of size (num_batches x height x width).
+# Convert the noisy sinogram data to a torch tensor
+y = torch.from_numpy(data_np).to(device).unsqueeze(0)
+
+# Compute the FBP reconstruction as the initial guess
 x_init = fbp_op(y)
 
-ground_truth = (
-    torch.from_numpy(phantom_np).to(device).unsqueeze(0)
-)  # target ground-truth as a torch tensor
+# Convert the ground-truth image to a torch tensor
+ground_truth = torch.from_numpy(phantom_np).to(device).unsqueeze(0)
 
-# define the loss and the optimizer
+# Define the loss and the optimizer
 mse_loss = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(lgd_net.parameters(), lr=1e-4)
 num_epochs = 2000
 
 # Training loop
 for epoch in range(0, num_epochs):
-    optimizer.zero_grad()
-    """################## YOUR CODE HERE #################### """
-    # You need to compute the reconstructed image by applying a forward pass through lgd_net,
-    # compute the loss,
-    # call the backward function on loss,
-    # and update the parameters.
+    # ----------------------------------------
+    # Authored section of code by T. Breitburd
+    # ----------------------------------------
 
+    # Zero the gradients
+    optimizer.zero_grad()
+
+    # Pass the input through the network, to get the reconstruction
     recon = lgd_net(y, x_init)
 
+    # Compute the loss
     loss = mse_loss(recon, ground_truth)
 
+    # Backward pass and optimization step
     loss.backward()
-
     optimizer.step()
 
     if epoch % 100 == 0:
-        print("epoch = {}, loss = {}".format(epoch, loss.item()))
+        print("Epoch = {}, Loss = {}".format(epoch, loss.item()))
 
-lgd_recon_np = (
-    recon.detach().cpu().numpy().squeeze()
-)  # convert the LGD reconstruction to numpy format
+# Convert the reconstruction to a numpy array
+lgd_recon_np = recon.detach().cpu().numpy().squeeze()
 
 # Let's display the reconstructed images by LGD and compare it with FBP and ADMM
-plt.subplot(141)
-plt.imshow(phantom_np.transpose(), cmap="bone")
-plt.xticks([])
-plt.yticks([])
-plt.title("ground-truth")
-
-plt.subplot(142)
-plt.imshow(fbp_np.transpose(), cmap="bone")
-plt.xticks([])
-plt.yticks([])
-plt.title("FBP")
-plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_fbp, ssim_fbp))
+plot_ADMM_FBP_LGD(phantom_np, fbp_np, x_admm_np, lgd_recon_np)

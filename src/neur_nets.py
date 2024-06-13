@@ -6,7 +6,7 @@ as well as the definitiom of some of the operators used in the LGD algorithm.
 @details The prox_net class defines the proximal operator of the gradient of the data term,
 while the LGD_net class defines the LGD algorithm, which itself uses the prox_net class.
 
-@author T.Breitburd on 12/06/24
+@author T.Breitburd and Course Instructor on 12/06/24
 """
 
 import torch
@@ -67,6 +67,9 @@ class prox_net(nn.Module):
         self.act1 = nn.PReLU(num_parameters=1, init=0.25)
         self.act2 = nn.PReLU(num_parameters=1, init=0.25)
 
+    # -----------------------------------------------------------
+    # Authored section of code by T. Breitburd
+    # -----------------------------------------------------------
     def forward(self, x, u):
         """!@brief Forward pass of the proximal operator.
 
@@ -113,6 +116,9 @@ class LGD_net(nn.Module):
         self.fwd_op = fwd_op
         self.adj_op = adj_op
 
+    # -----------------------------------------------------------
+    # Authored section of code by T. Breitburd
+    # -----------------------------------------------------------
     def forward(self, y, x_init):
         """!@brief Forward pass of the LGD algorithm.
 
