@@ -1,0 +1,4 @@
+name: enviroment_name
+channels:
+  - defaults
+prefix: /Users/thomasbreitburd/anaconda3/envs/enviroment_name
