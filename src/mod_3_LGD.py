@@ -3,17 +3,186 @@
 @author T.Breitburd and Course Instructor on 12/06/24
 """
 
+import os
 import numpy as np
 import astra
+import matplotlib.pyplot as plt
 from skimage.metrics import peak_signal_noise_ratio as compare_psnr
 from skimage.metrics import structural_similarity as compare_ssim
 import torch
 import odl
 import odl.contrib.torch as odl_torch
 from neur_nets import LGD_net
-from plot_funcs import plot_grd_truth_FBP, plot_ADMM_FBP, plot_ADMM_FBP_LGD
 
 astra.test()
+
+
+# -----------------------------------------------------------
+# Plot functions from the given notebook (i.e. authored by the course instructor)
+# -----------------------------------------------------------
+
+
+def plot_grd_truth_FBP(phantom_np, data_np, fbp_np, data_range, psnr_fbp, ssim_fbp):
+    """!@brief Function to plot the ground-truth, sinogram, and FBP image
+
+    @param phantom_np the ground-truth image, numpy array
+    @param data_np the sinogram data, numpy array
+    @param fbp_np the FBP image, numpy array
+    @param data_range the data range, float
+    @param psnr_fbp the PSNR of the FBP image, float
+    @param ssim_fbp the SSIM of the FBP image, float
+
+    @return None"""
+
+    plt.figure(figsize=(9, 4))
+
+    plt.subplot(131)
+    plt.imshow(phantom_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("ground-truth")
+
+    plt.subplot(132)
+    plt.imshow(data_np, cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("sinogram")
+
+    plt.subplot(133)
+    plt.imshow(fbp_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("FBP")
+    data_range = np.max(phantom_np) - np.min(phantom_np)
+    psnr_fbp = compare_psnr(phantom_np, fbp_np, data_range=data_range)
+    ssim_fbp = compare_ssim(phantom_np, fbp_np, data_range=data_range)
+    plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_fbp, ssim_fbp))
+    plt.gcf().set_size_inches(9.0, 6.0)
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "q3.1_grd_truth_FBP.png")
+    plt.savefig(plot_dir)
+
+
+def plot_ADMM_FBP(
+    phantom_np, fbp_np, x_admm_np, data_range, psnr_fbp, ssim_fbp, psnr_tv, ssim_tv
+):
+    """!@brief Function to plot the ground-truth, FBP, and ADMM image
+
+    @param phantom_np the ground-truth image, numpy array
+    @param fbp_np the FBP image, numpy array
+    @param x_admm_np the ADMM image, numpy array
+    @param data_range the data range, float
+    @param psnr_fbp the PSNR of the FBP image, float
+    @param ssim_fbp the SSIM of the FBP image, float
+    @param psnr_tv the PSNR of the TV image, float
+
+    @return None"""
+
+    plt.figure(figsize=(9, 4))
+
+    plt.subplot(131)
+    plt.imshow(phantom_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("ground-truth")
+
+    plt.subplot(132)
+    plt.imshow(fbp_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("FBP")
+    plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_fbp, ssim_fbp))
+
+    plt.subplot(133)
+    plt.imshow(x_admm_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("TV")
+    psnr_tv = compare_psnr(phantom_np, x_admm_np, data_range=data_range)
+    ssim_tv = compare_ssim(phantom_np, x_admm_np, data_range=data_range)
+    plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_tv, ssim_tv))
+    plt.gcf().set_size_inches(9.0, 6.0)
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "q3.1_grd_truth_FBP_ADMM.png")
+    plt.savefig(plot_dir)
+
+
+def plot_ADMM_FBP_LGD(
+    phantom_np,
+    fbp_np,
+    x_admm_np,
+    lgd_recon_np,
+    data_range,
+    psnr_fbp,
+    ssim_fbp,
+    psnr_tv,
+    ssim_tv,
+):
+    """!@brief Function to plot the ground-truth, FBP, ADMM, and LGD image
+
+    @param phantom_np the ground-truth image, numpy array
+    @param fbp_np the FBP image, numpy array
+    @param x_admm_np the ADMM image, numpy array
+    @param lgd_recon_np the LGD image, numpy array
+    @param data_range the data range, float
+    @param psnr_fbp the PSNR of the FBP image, float
+    @param ssim_fbp the SSIM of the FBP image, float
+    @param psnr_tv the PSNR of the TV image, float
+    @param ssim_tv the SSIM of the TV image, float
+
+    @return None"""
+
+    plt.figure(figsize=(12, 4))
+
+    plt.subplot(141)
+    plt.imshow(phantom_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("ground-truth")
+
+    plt.subplot(142)
+    plt.imshow(fbp_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("FBP")
+    plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_fbp, ssim_fbp))
+
+    plt.subplot(143)
+    plt.imshow(x_admm_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("TV")
+    plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_tv, ssim_tv))
+    plt.gcf().set_size_inches(9.0, 6.0)
+
+    plt.subplot(144)
+    plt.imshow(lgd_recon_np.transpose(), cmap="bone")
+    plt.xticks([])
+    plt.yticks([])
+    plt.title("LGD")
+    psnr_lgd = compare_psnr(phantom_np, lgd_recon_np, data_range=data_range)
+    ssim_lgd = compare_ssim(phantom_np, lgd_recon_np, data_range=data_range)
+    plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_lgd, ssim_lgd))
+    plt.gcf().set_size_inches(12.0, 6.0)
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "q3.1_grd_truth_FBP_ADMM_LGD.png")
+    plt.savefig(plot_dir)
+
 
 # -----------------------------------------------------------
 # Set up the forward operator (ray transform) in ODL
