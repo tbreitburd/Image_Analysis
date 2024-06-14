@@ -156,6 +156,7 @@ def plot_tulips_hsv(tulips_hsv):
     for i, channel in enumerate(["Hue", "Saturation", "Value"]):
         ax[i].imshow(tulips_hsv[:, :, i], cmap="gray")
         ax[i].set_title(f"{channel} Channel")
+        ax[i].grid(False)
 
     plt.tight_layout()
     # Save the plot

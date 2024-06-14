@@ -147,7 +147,7 @@
 
 \tableofcontents
 
-\chapter*{Introduction}
+\chapter*{}
 
 \chapter{Fundamentals of Image Analysis}
 
@@ -181,15 +181,23 @@ Here, the task was to segment purple tulips from an image of a Dutch tulip field
     \label{fig:flower_hsv}
 \end{figure}
 
-It can also be seen that, conveniently, the purple hue is close to the largest value on the spectrum, with the exception of red which is at both extremities. And looking at the histogram of the hue channel, with hue overlaid, one can see that using a single threshold may already be very helpful in segmenting the image (see \ref{fig:hsv_hist}). The resulting image will be a noisy binary image. But using opening and gaussian blurr...Then chan vese, final result...
+It can also be seen that, conveniently, the purple hue is close to the largest value on the spectrum, with the exception of red which is at both extremities. And looking at the histogram of the hue channel, with hue overlaid, one can see that using a single threshold may already be very helpful in segmenting the image (see \ref{fig:hsv_hist}). Applyin that threshold, the resulting image will be a noisy binary image. But by applying opening (erosion then dilation, see Sec. 1.1.1.) to the image, this removes the darker noise in lighter regions. A gaussian filter is then applied\cite[pp. 166-170]{gonzalez2002digital}, smoothing out the binary image's noise, and giving back a grayscale image.
 
-% \begin{figure}[htbp]
-%     \centering
-%     \includegraphics[width=0.8\textwidth]{../Plots/tulip_hsv_hist.png}
-%     \caption{The histogram of the hue channel of the \texttt{noisy\_flower.jpg} image.}
-%     \label{fig:hsv_hist}
-% \end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../Plots/tulip_hue_hist.png}
+    \caption{The histogram of the hue channel of the \texttt{noisy\_flower.jpg} image.}
+    \label{fig:hsv_hist}
+\end{figure}
 
+Finally, the main algorithm used for this image is the Chan-Vese segmentation algorithm\cite{chan1999active}. This algorithm performs well for objects without clear boundaries. It works by iteratively updating a level set to minimize an energy/loss function, defined as the sum of intensity difference from the average values inside and outside segmented regions\cite{skimage_chan_vese}. Finally, opening is applied to the segmented image to remove small regions segmented by Chan-Vese from the noise, which do not correspond to the purple tulips. The result of this complete process is shown in Figure \ref{fig:tulip_segmentation}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../Plots/tulip_segmentation.png}
+    \caption{The segmentation process of the \texttt{noisy\_flower.jpg} image.}
+    \label{fig:tulip_segmentation}
+\end{figure}
 
 \subsection{Image 3: \texttt{coins.png}}
 

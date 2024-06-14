@@ -64,15 +64,19 @@ fig, ax = plt.subplots(2, 2, figsize=(10, 10))
 
 ax[0, 0].imshow(tulips)
 ax[0, 0].set_title("Original Image")
+ax[0, 0].grid(False)
 
 ax[0, 1].imshow(blurred_mask, cmap="gray")
 ax[0, 1].set_title("Blurred Binary Image")
+ax[0, 1].grid(False)
 
 ax[1, 0].imshow(cv_mask, cmap="gray")
 ax[1, 0].set_title("Chan-Vese Segmentation")
+ax[1, 0].grid(False)
 
 ax[1, 1].imshow(cv_mask_op, cmap="gray")
 ax[1, 1].set_title("Opened Final Image")
+ax[1, 1].grid(False)
 
 plt.tight_layout()
 # Save the plot
