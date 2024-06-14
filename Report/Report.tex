@@ -418,22 +418,29 @@ In this exercise, compressed reconstruction is discussed, specifically how image
 
 \subsection{Daubechies Wavelet Transform}
 
-EXPLAIN THE DAUBECHIES WAVELET TRANSFORM
+Discrete wavelet transforms make the use of a scaling function adn wavelets to express images as a linear combination of them. The scaling function generates a series of approximations of the image, and the wavelets encode the differences between adjacent approximations. And the decomposition can be made at different resolution levels, with each level encoding more detail of the image\cite{mallat1989theory}.
 
-Once computed, the wavelet coefficients can be visualised as an image, as shown in Figure \ref{fig:wavelet_coefficients}. As can be seen, each describes details of the image at different scales.
+Once computed, the wavelet coefficients can be visualised as an image, as shown in Figures \ref{fig:wavelet_coefficients} and \ref{fig:wavelet_coefficients2}. As can be seen, each describes details of the image at different scales. Namely, the 2nd level coefficients seem to capture the features of the riverside image more intensely than the 1st level coefficients.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies.png}
-    \caption{The Daubechies wavelet transform coefficients of the riverside image.}
+    \includegraphics[width=0.7\textwidth]{../Plots/q2.3_daubechies_lvl1.png}
+    \caption{The 1st scaling level Daubechies wavelet transform coefficients of the riverside image.}
     \label{fig:wavelet_coefficients}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../Plots/q2.3_daubechies_lvl2.png}
+    \caption{The 2nd scaling level Daubechies wavelet transform coefficients of the riverside image.}
+    \label{fig:wavelet_coefficients2}
 \end{figure}
 
 One can then reconstruct it using the inverse wavelet transform, and the image is shown in Figure \ref{fig:reconstructed_image}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_riverside_reconstructed.png}
+    \includegraphics[width=0.7\textwidth]{../Plots/q2.3_riverside_reconstructed.png}
     \caption{The reconstructed riverside image using the Daubechies wavelet transform.}
     \label{fig:reconstructed_image}
 \end{figure}
@@ -459,16 +466,23 @@ For the second part of this exercise, the task was to threshold the wavelet coef
     \end{cases}
 \end{equation}
 
-Thus, this method is used for the top 2.5, 5, 10, 15, and 20\% of the coefficients. The result for the top 15\% threshold is shown in figure \ref{fig:thresholded_image15}.
+Thus, this method is used for the top 2.5, 5, 10, 15, and 20\% of the coefficients. The result for the top 15\% threshold is shown in figures \ref{fig:thresholded_image15} and \ref{fig:thresholded_image15_2}.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_15.png}
-    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 15\% threshold.}
+    \caption{The thresholded riverside image 1st level Daubechies wavelet transform coefficients, for a top 15\% threshold.}
     \label{fig:thresholded_image15}
 \end{figure}
 
-For the other thresholds, the results are shown in Figures \ref{fig:thresholded_image20}, \ref{fig:thresholded_image10},  \ref{fig:thresholded_image5}, and \ref{fig:thresholded_image2.5}, in the Appendix. For each of these thresholds, the riverside image was reconstructed and compared to the original image. Again, this is first done for the 15\% threshold, and the results are shown in Figures \ref{fig:reconstructed_image15}, \ref{fig:diff_image15}.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_15_2.png}
+    \caption{The thresholded riverside image 2nd level Daubechies wavelet transform coefficients, for a top 15\% threshold.}
+    \label{fig:thresholded_image15_2}
+\end{figure}
+
+For the other thresholds, the results are shown in Figures \ref{fig:thresholded_image20}, \ref{fig:thresholded_image20_2}, \ref{fig:thresholded_image10}, \ref{fig:thresholded_image10_2}, \ref{fig:thresholded_image5}, \ref{fig:thresholded_image5_2}, \ref{fig:thresholded_image2.5}, and \ref{fig:thresholded_image2.5_2}, in the Appendix. For each of these thresholds, the riverside image was reconstructed and compared to the original image. Again, this is first done for the 15\% threshold, and the results are shown in Figures \ref{fig:reconstructed_image15}, \ref{fig:diff_image15}.
 
 \begin{figure}[htbp]
     \centering
@@ -485,23 +499,107 @@ For the other thresholds, the results are shown in Figures \ref{fig:thresholded_
 \end{figure}
 
 
-For the other thresholds, the results are shown in Figure \ref{fig:reconstructed_image20}, \ref{fig:reconstructed_image10},  \ref{fig:reconstructed_image5}, and \ref{fig:reconstructed_image2.5}, in the Appendix. The difference between the original and reconstructed images is shown in Figure \ref{fig:diff_image15}.
+For the other thresholds, the results are shown in Figure \ref{fig:reconstructed_image20}, \ref{fig:reconstructed_image10},  \ref{fig:reconstructed_image5}, and \ref{fig:reconstructed_image2.5}, in the Appendix. And the differences between the original and reconstructed images are shown in Figure \ref{fig:diff_image20}, \ref{fig:diff_image10}, \ref{fig:diff_image5}, and \ref{fig:diff_image2.5}.
 
 
 \subsection{Discussion}
 
-As expected, the higher the threshold the less coefficient's information is kept. However, reconstructions stays qualitatively good, and the diff figures show less noise in the reconstructed images. This is because the noise is often in the smaller coefficients, and by thresholding these out, the noise is removed. However, the thresholding also removes some of the detail in the image, as can be seen in the reconstructed images. This is a trade-off that must be considered when thresholding wavelet coefficients.
+As expected, the higher the threshold the less coefficient's information is kept, and for the 1st level decomposition, this reduces to a nearly blank image for thresholds lower than 15\%. However, reconstructions stays qualitatively good, and the difference plots show less noise in the reconstructed images the lower the threshold value. This is because the noise can be captured and will be seen in the lower value coefficients, and by thresholding these out, the "noise information" is lost. However, the thresholding also removes some of the detail in the image, as can be seen in the reconstructed images. This is a trade-off that must be considered when thresholding wavelet coefficients.
 
 \chapter{Solving Inverse Problems}
 
+In this chapter, the reconstruction of images from noisy data is discussed. And multiple methods are compared, mainly a classical model-driven regularization (Total Variation regularized reconstruction), and a data-driven regularization (Learned gradient descent with a neural network). The image studied is the Shepp-Logan phantom.
+
 \section{Exercise 3.1}
+
+As an entry problem into inverse problems, the task of minimizing the function \(f: \mathbb{R}^2 \to \mathbb{R}\) defined as
+
+\begin{equation}
+f(x) = \frac{1}{2} [x]_1^2 + [x]_2^2, \quad \text{where} \quad x = \begin{bmatrix} [x]_1 \\ [x]_2 \end{bmatrix},
+\end{equation}
+
+is considered. As gradient descent is the chosen method here, the gradient of the function must be computed and is given by: $\nabla f(x) = \begin{bmatrix} [x]_1 \\ 2[x]_2 \end{bmatrix}$. In order to use the $L$-smooth function property given in the coursework paper, it must be shown that the gradient of $f(x)$ is $L$-Lipschitz continuous. This is done by showing that for all $x, y \in \mathbb{R}^2$, there exists a constant $L$ such that \cite{lecture3}:
+
+\begin{equation}
+    ||\nabla f(x) - \nabla f(y)|| \leq L||x - y||
+\end{equation}
+
+This can be done by computing both norms, of the gradient differences and the vector differences. The norm of the gradient difference is given by:
+
+\begin{equation}
+    ||\nabla f(x) - \nabla f(y)|| = \left|\left| \begin{bmatrix} [x]_1 - [y]_1 \\ 2[x]_2 - 2[y]_2 \end{bmatrix} \right|\right| = \sqrt{([x]_1 - [y]_1)^2 + 4([x]_2 - [y]_2)^2}
+\end{equation}
+
+Then, for the vector difference norm:
+
+\begin{equation}
+    ||x - y|| = \left|\left| \begin{bmatrix} [x]_1 - [y]_1 \\ [x]_2 - [y]_2 \end{bmatrix} \right|\right| = \sqrt{([x]_1 - [y]_1)^2 + ([x]_2 - [y]_2)^2}
+\end{equation}
+
+And it is clear that the gradient of $f(x)$ is 2-Lipschitz continuous, as one can easily show that:
+
+\begin{equation}
+    \sqrt{([x]_1 - [y]_1)^2 + 4([x]_2 - [y]_2)^2} \leq 2 \times \sqrt{([x]_1 - [y]_1)^2 + ([x]_2 - [y]_2)^2}
+\end{equation}
+
+since the squared terms are positive so multiplying both of them by 4 will result in a larger value than just multiplying one. More formally, the smallest L that satisfies this condition is given by the maximum eigenvalue of the hessian matrix of $f(x)$\cite[claim 5]{lecture12}:
+
+\begin{equation}
+    \nabla^2 f(x) = \begin{bmatrix} 1 & 0 \\ 0 & 2 \end{bmatrix}
+\end{equation}
+
+And the eigenvalues of this matrix satisfy: $\text{det}(\lambda I - \nabla^2 f(x)) = 0$, which gives $(\lambda - 1)(\lambda - 2) = 0$, giving a maximum eigenvalue of 2. Thus, the gradient of $f(x)$ is $L$-Smooth with $L = 2$.
+
+Thus, the following inequality holds:
+
+\begin{equation}
+    f(x_K) - f(x^*) \leq \frac{2 \|x_0 - x^*\|^2}{2K}
+\end{equation}
+
+where $x^*$ is the vector $X$ for which $f(x)$ is minimised, $x_0$ is the initial guess, and $x_K$ is the K-th iteration of the gradient descent algorithm. This inequality can be used to determine the number of iterations needed to reach a certain accuracy, given the initial guess and optimal vector. Now the function $f(x)$ has a clear minimum at $x^* = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$, and the gradient descent algorithm is run with an initial guess of $x_0 = \begin{bmatrix} 1 \\ 1 \end{bmatrix}$.
+
+For that case, the value of K needed for the RHS of the inequality to be less than $\epsilon = 0.01$ is given by:
+
+\begin{equation}
+    0.01 \geq \frac{2 \|x_0 - x^*\|^2}{2K} \iff K \geq \frac{2 \|x_0 - x^*\|^2}{2\times 0.02} = \frac{2 \times 2}{0.02} = 200
+\end{equation}
+
+However, when applying the gradient descent algorithm, setting the learning rate to 1/L, the algorithm converges to an $\epsilon \leq 0.01$ in 3 iterations, and the evolution of the vector $x$'s components is shown in Figure \ref{fig:gradient_descent}. And the final value of $\epsilon$ is 0.0078.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q3_1_Convergence.png}
+    \caption{The convergence of the gradient descent algorithm for the function $f(x)$.}
+    \label{fig:gradient_descent}
+\end{figure}
+
 
 
 \section{Exercise 3.2}
 
+In this exercise the 2 methods mentionned at the start of this chapter are compared. The first method implements the ADMM algorithm\cite{boyd2011distributed} to solve a Total Variation regularized reconstruction problem for the Shepp-Logan phantom image. The TV-regularized reconstruction problem is given by:
 
-\section{Exercise 3.3}
+\begin{equation}
+    \min_{u} ||y - Ax||^2_2 + \lambda ||\nabla x||_1
+\end{equation}
 
+where $y$ is the noisy sinogram of the image to be reconstructed, $A$ is the measurement matrix, $x$ is the image to be reconstructed, $\lambda$ is the regularization parameter, and $\nabla x$ is the gradient of the image. The ADMM algorithm is used to solve this problem, and the results are shown in Figure \ref{fig:tv_reconstruction}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q3.2_grd_truth_FBP.png}
+    \caption{The TV-regularized reconstruction of the Shepp-Logan phantom image.}
+    \label{fig:tv_reconstruction}
+\end{figure}
+
+The second method uses a neural network to solve the same problem, but with a learned gradient descent algorithm. The network is trained on the Shepp-Logan phantom image, and the results are shown in Figure \ref{fig:learned_reconstruction}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q3.2_grd_truth_FBP_ADMM_LGD.png}
+    \caption{The learned gradient descent reconstruction of the Shepp-Logan phantom image.}
+    \label{fig:learned_reconstruction}
+\end{figure}
 
 \chapter{Appendix}
 
@@ -512,30 +610,59 @@ As expected, the higher the threshold the less coefficient's information is kept
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_20.png}
-    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 20\% threshold.}
+    \caption{The thresholded riverside image 1st level Daubechies wavelet transform coefficients, for a top 20\% threshold.}
     \label{fig:thresholded_image20}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_20_2.png}
+    \caption{The thresholded riverside image 2nd level Daubechies wavelet transform coefficients, for a top 20\% threshold.}
+    \label{fig:thresholded_image20_2}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_10.png}
-    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 10\% threshold.}
+    \caption{The thresholded riverside image 1st Daubechies wavelet transform coefficients, for a top 10\% threshold.}
     \label{fig:thresholded_image10}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_10_2.png}
+    \caption{The thresholded riverside image 2nd Daubechies wavelet transform coefficients, for a top 10\% threshold.}
+    \label{fig:thresholded_image10_2}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_5.png}
-    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 5\% threshold.}
+    \caption{The thresholded riverside image 1st level Daubechies wavelet transform coefficients, for a top 5\% threshold.}
     \label{fig:thresholded_image5}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_5_2.png}
+    \caption{The thresholded riverside image 2nd level Daubechies wavelet transform coefficients, for a top 5\% threshold.}
+    \label{fig:thresholded_image5_2}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_2_5.png}
-    \caption{The thresholded riverside image Daubechies wavelet transform coefficients, for a top 2.5\% threshold.}
+    \caption{The thresholded riverside image 1st level Daubechies wavelet transform coefficients, for a top 2.5\% threshold.}
     \label{fig:thresholded_image2.5}
 \end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q2.3_daubechies_thresh_2_5_2.png}
+    \caption{The thresholded riverside image 2nd level Daubechies wavelet transform coefficients, for a top 2.5\% threshold.}
+    \label{fig:thresholded_image2.5_2}
+\end{figure}
+
 
 \begin{figure}[htbp]
     \centering
