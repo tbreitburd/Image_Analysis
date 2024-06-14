@@ -141,3 +141,61 @@ def plot_reconstruct_image(im, reconstructed_im, path):
 
     plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
+
+
+def plot_tulips_hsv(tulips_hsv):
+    """!@brief Function to plot the Hue, Saturation, and Value channels of the tulips image
+
+    @param tulips_hsv the tulips image in HSV format, numpy array
+
+    @return None"""
+
+    # Plot grayscale image of all three channels
+    fig, ax = plt.subplots(1, 3, figsize=(15, 5))
+
+    for i, channel in enumerate(["Hue", "Saturation", "Value"]):
+        ax[i].imshow(tulips_hsv[:, :, i], cmap="gray")
+        ax[i].set_title(f"{channel} Channel")
+
+    plt.tight_layout()
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "tulip_hsv.png")
+    plt.savefig(plot_dir)
+
+    plt.close()
+
+
+def plot_hue_hist(hue_channel):
+    """!@brief Function to plot the histogram of the hue channel
+
+    @param hue_channel the hue channel of the tulips image, numpy array
+
+    @return None"""
+
+    # Plot the histogram of the hue values
+    plt.figure(figsize=(10, 6))
+
+    # Get the histogram of the hue values
+    _, bin_centres, bins = plt.hist(hue_channel.ravel(), bins=200)
+
+    # Overlay hue values on the histogram
+    for patch, hue in zip(bins, bin_centres):
+        patch.set_facecolor(plt.cm.hsv(hue))
+
+    plt.title("Hue Histogram with HSV Hue Overlaid")
+    plt.xlabel("Hue value")
+    plt.ylabel("Frequency")
+
+    # Save the plot
+    cur_dir = os.getcwd()
+    plots_dir = os.path.join(cur_dir, "Plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
+    plot_dir = os.path.join(plots_dir, "tulip_hue_hist.png")
+    plt.savefig(plot_dir)
+
+    plt.close()

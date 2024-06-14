@@ -14,6 +14,7 @@ from skimage.filters import threshold_otsu
 from skimage.morphology import opening, disk
 from skimage.segmentation import chan_vese
 import os
+from plot_funcs import plot_tulips_hsv, plot_hue_hist
 
 # Set the random seed
 np.random.seed(75016)
@@ -29,23 +30,11 @@ tulips = tulips[:, :, :3]
 # Switch to Hue-Saturation-Value (HSV) color space
 tulips_hsv = skimage.color.rgb2hsv(tulips)
 
-# Plot grayscale image of all three channels
-fig, ax = plt.subplots(1, 3, figsize=(15, 5))
+# Plot grayscale image of each channel of the HSV image
+plot_tulips_hsv(tulips_hsv)
 
-for i, channel in enumerate(["Hue", "Saturation", "Value"]):
-    ax[i].imshow(tulips_hsv[:, :, i], cmap="gray")
-    ax[i].set_title(f"{channel} Channel")
-
-plt.tight_layout()
-# Save the plot
-cur_dir = os.getcwd()
-plots_dir = os.path.join(cur_dir, "Plots")
-os.makedirs(plots_dir, exist_ok=True)
-
-plot_dir = os.path.join(plots_dir, "tulip_hsv.png")
-plt.savefig(plot_dir)
-
-plt.close()
+# Plot the histogram of the Hue channel
+plot_hue_hist(tulips_hsv[:, :, 0])
 
 # ----------------------------------------
 # Segmentation
