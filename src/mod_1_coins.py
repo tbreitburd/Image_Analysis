@@ -94,11 +94,8 @@ def plot_segmented_coin(coin_number):
     min_y, min_x = max(min_y - 10, 0), max(min_x - 10, 0)
     max_y, max_x = min(max_y + 10, coins.shape[0]), min(max_x + 10, coins.shape[1])
 
-    # Plot the coin
-    plt.figure(figsize=(6, 6))
-
     # Plot the steps of the segmentation
-    plt.figure(figsize=(12, 12))
+    plt.figure(figsize=(8, 8))
     plt.subplot(221)
     plt.imshow(coins[min_y:max_y, min_x:max_x], cmap="gray")
     plt.title("Original image")

@@ -201,6 +201,42 @@ Finally, the main algorithm used for this image is the Chan-Vese segmentation al
 
 \subsection{Image 3: \texttt{coins.png}}
 
+For this problem, the task was to segment specific coins from an image of antique coins, which has been corrupted with vertical black lines across the image. Specifically, the 1st coin of the 1st row, 2nd coin of the 2nd row, and so on until the 4th row. Here, the main challenge was dealing with the lines and then the lighter background at the top left of the image, which almost matched the lighter shade of the coin.
+
+The segmentation for this problem first made use of an inpainting algorithm \cite{skimage_inpaint_biharmonic}. This uses biharmonic functions, constructed using Lpalacinan and normal derivatives of the boundary data\cite{damelin2018surface}. Once the image is inpainted, the contrast of the image is increased using the scikit-image \texttt{exposure.rescale\_intensity} function. This function linearly scales the intensity of the image to a certain range, which can be set as the minimum and maximum values of the image\cite{skimage_rescale_intensity}. This is done to make the coins more distinguishable from the background.
+
+The second part of the segmentation was to try and remove the background of the image, using a rolling-ball algorithm. This is akin to a filter as it uses kernels to define the shape of the object that is "rolled". For a sphere kernel, one can imagine creating a discretized surface where each square column represents a pixel, and having a ball roll on the underside of that surface. With sufficient radius, that sphere will not "fall up" in the peaks of the image, and the background will be estimated as the height of the apex of the ball\cite{skimage_rolling_ball}. With the background estimates, it can be subtracted from the image, making the segmentation of the coins easier.
+
+Third, K-means clustering is used to segment all the coins in the image. By setting the number of clusters to 2, the algorithm initializes two values between 0 and 255. It then assigns each pixel to the cluster with the closest mean value. This process is repeated iteratively until the cluster assignments no longer change, resulting in the image being divided into two regions\cite{sklearn_kmeans}. The coins are then labelled, and the chosen coins are isolated from those labels. The result of this process is shown for each coin in Figures \ref{fig:coin_7_segmentation}, \ref{fig:coin_16_segmentation}, \ref{fig:coin_23_segmentation}, and \ref{fig:coin_27_segmentation}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../Plots/Coin_segmentation_7.png}
+    \caption{The segmentation of the 1st coin in the 1st row.}
+    \label{fig:coin_7_segmentation}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../Plots/Coin_segmentation_16.png}
+    \caption{The segmentation of the 2nd coin in the 2nd row.}
+    \label{fig:coin_16_segmentation}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../Plots/Coin_segmentation_23.png}
+    \caption{The segmentation of the 3rd coin in the 3rd row.}
+    \label{fig:coin_23_segmentation}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../Plots/Coin_segmentation_27.png}
+    \caption{The segmentation of the 4th coin in the 4th row.}
+    \label{fig:coin_27_segmentation}
+\end{figure}
+
 
 \chapter{Inverse Problems and Multiresolution Analysis}
 
