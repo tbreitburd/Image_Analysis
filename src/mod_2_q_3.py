@@ -20,17 +20,30 @@ riverside = plt.imread(
 plot_riverside(riverside)
 
 # Get the Daubechies wavelet transform
-daub = pywt.dwt2(riverside, wavelet="db3")
+daub = pywt.wavedec2(riverside, wavelet="db3", level=2)
 
-approx, (hori, vert, diag) = daub
+approx, (hori2, vert2, diag2), (hori, vert, diag) = daub
 
 # Plot the Daubechies wavelet coefficients
 plot_daubechies(
-    approx, hori, vert, diag, "Daubechies Wavelet Coefficients", "q2.3_daubechies.png"
+    approx,
+    hori,
+    vert,
+    diag,
+    "Daubechies Wavelet Coefficients (Level 1)",
+    "q2.3_daubechies_lvl1.png",
+)
+plot_daubechies(
+    approx,
+    hori2,
+    vert2,
+    diag2,
+    "Daubechies Wavelet Coefficients (Level 2)",
+    "q2.3_daubechies_lvl2.png",
 )
 
 # Reconstruct the image
-reconstructed = pywt.idwt2(daub, wavelet="db3")
+reconstructed = pywt.waverec2(daub, wavelet="db3")
 
 # Plot the reconstructed image
 plot_reconstruct_image(riverside, reconstructed, "q2.3_riverside_reconstructed.png")
@@ -86,6 +99,9 @@ threshold = 0.85
 approx, (hori_15, vert_15, diag_15) = threshold_riverside(
     threshold, approx, (hori, vert, diag)
 )
+approx, (hori_15_2, vert_15_2, diag_15_2) = threshold_riverside(
+    threshold, approx, (hori2, vert2, diag2)
+)
 
 # Plot the thresholded wavelet coefficients
 plot_daubechies(
@@ -93,10 +109,18 @@ plot_daubechies(
     hori_15,
     vert_15,
     diag_15,
-    "Top 15% Thresholded Daubechies \n Wavelet Coefficients",
+    "Top 15% Thresholded Daubechies \n Wavelet Coefficients (Level 1)",
     "q2.3_daubechies_thresh_15.png",
 )
 
+plot_daubechies(
+    approx,
+    hori_15_2,
+    vert_15_2,
+    diag_15_2,
+    "Top 15% Thresholded Daubechies \n Wavelet Coefficients (Level 2)",
+    "q2.3_daubechies_thresh_15_2.png",
+)
 
 # ------------------------------------------
 # c) Repeat the thresholding for different
@@ -108,6 +132,10 @@ threshold = 0.80
 approx, (hori_20, vert_20, diag_20) = threshold_riverside(
     threshold, approx, (hori, vert, diag)
 )
+approx, (hori_20_2, vert_20_2, diag_20_2) = threshold_riverside(
+    threshold, approx, (hori2, vert2, diag2)
+)
+
 
 # Plot the thresholded wavelet coefficients
 plot_daubechies(
@@ -119,11 +147,25 @@ plot_daubechies(
     "q2.3_daubechies_thresh_20.png",
 )
 
+plot_daubechies(
+    approx,
+    hori_20_2,
+    vert_20_2,
+    diag_20_2,
+    "Top 20% Thresholded Daubechies \n Wavelet Coefficients (Level 2)",
+    "q2.3_daubechies_thresh_20_2.png",
+)
+
+
 # Retain only top 10% of the wavelet coefficients
 threshold = 0.90
 approx, (hori_10, vert_10, diag_10) = threshold_riverside(
     threshold, approx, (hori, vert, diag)
 )
+approx, (hori_10_2, vert_10_2, diag_10_2) = threshold_riverside(
+    threshold, approx, (hori2, vert2, diag2)
+)
+
 
 # Plot the thresholded wavelet coefficients
 plot_daubechies(
@@ -134,11 +176,23 @@ plot_daubechies(
     "Top 10% Thresholded Daubechies \n Wavelet Coefficients",
     "q2.3_daubechies_thresh_10.png",
 )
+plot_daubechies(
+    approx,
+    hori_10_2,
+    vert_10_2,
+    diag_10_2,
+    "Top 10% Thresholded Daubechies \n Wavelet Coefficients (Level 2)",
+    "q2.3_daubechies_thresh_10_2.png",
+)
+
 
 # Retain only top 5% of the wavelet coefficients
 threshold = 0.95
 approx, (hori_5, vert_5, diag_5) = threshold_riverside(
     threshold, approx, (hori, vert, diag)
+)
+approx, (hori_5_2, vert_5_2, diag_5_2) = threshold_riverside(
+    threshold, approx, (hori2, vert2, diag2)
 )
 
 # Plot the thresholded wavelet coefficients
@@ -151,10 +205,22 @@ plot_daubechies(
     "q2.3_daubechies_thresh_5.png",
 )
 
+plot_daubechies(
+    approx,
+    hori_5_2,
+    vert_5_2,
+    diag_5_2,
+    "Top 5% Thresholded Daubechies \n Wavelet Coefficients (Level 2)",
+    "q2.3_daubechies_thresh_5_2.png",
+)
+
 # Retain only top 2.5% of the wavelet coefficients
 threshold = 0.975
 approx, (hori_2_5, vert_2_5, diag_2_5) = threshold_riverside(
     threshold, approx, (hori, vert, diag)
+)
+approx, (hori_2_5_2, vert_2_5_2, diag_2_5_2) = threshold_riverside(
+    threshold, approx, (hori2, vert2, diag2)
 )
 
 # Plot the thresholded wavelet coefficients
@@ -166,12 +232,23 @@ plot_daubechies(
     "Top 2.5% Thresholded Daubechies \n Wavelet Coefficients",
     "q2.3_daubechies_thresh_2_5.png",
 )
+plot_daubechies(
+    approx,
+    hori_2_5_2,
+    vert_2_5_2,
+    diag_2_5_2,
+    "Top 2.5% Thresholded Daubechies \n Wavelet Coefficients (Level 2)",
+    "q2.3_daubechies_thresh_2_5_2.png",
+)
 
 
 # Reconstruction of the images
 
 # Reconstruct the image with 15% thresholded coefficients
-reconstructed_15 = pywt.idwt2((approx, (hori_15, vert_15, diag_15)), wavelet="db3")
+reconstructed_15 = pywt.waverec2(
+    (approx, (hori_15_2, vert_15_2, diag_15_2), (hori_15, vert_15, diag_15)),
+    wavelet="db3",
+)
 
 # Plot the reconstructed image
 plot_reconstruct_image(
@@ -179,7 +256,10 @@ plot_reconstruct_image(
 )
 
 # Reconstruct the image with 20% thresholded coefficients
-reconstructed_20 = pywt.idwt2((approx, (hori_20, vert_20, diag_20)), wavelet="db3")
+reconstructed_20 = pywt.waverec2(
+    (approx, (hori_20_2, vert_20_2, diag_20_2), (hori_20, vert_20, diag_20)),
+    wavelet="db3",
+)
 
 # Plot the reconstructed image
 plot_reconstruct_image(
@@ -187,7 +267,10 @@ plot_reconstruct_image(
 )
 
 # Reconstruct the image with 10% thresholded coefficients
-reconstructed_10 = pywt.idwt2((approx, (hori_10, vert_10, diag_10)), wavelet="db3")
+reconstructed_10 = pywt.waverec2(
+    (approx, (hori_10_2, vert_10_2, diag_10_2), (hori_10, vert_10, diag_10)),
+    wavelet="db3",
+)
 
 # Plot the reconstructed image
 plot_reconstruct_image(
@@ -195,13 +278,18 @@ plot_reconstruct_image(
 )
 
 # Reconstruct the image with 5% thresholded coefficients
-reconstructed_5 = pywt.idwt2((approx, (hori_5, vert_5, diag_5)), wavelet="db3")
+reconstructed_5 = pywt.waverec2(
+    (approx, (hori_5_2, vert_5_2, diag_5_2), (hori_5, vert_5, diag_5)), wavelet="db3"
+)
 
 # Plot the reconstructed image
 plot_reconstruct_image(riverside, reconstructed_5, "q2.3_riverside_reconstructed_5.png")
 
 # Reconstruct the image with 2.5% thresholded coefficients
-reconstructed_2_5 = pywt.idwt2((approx, (hori_2_5, vert_2_5, diag_2_5)), wavelet="db3")
+reconstructed_2_5 = pywt.waverec2(
+    (approx, (hori_2_5_2, vert_2_5_2, diag_2_5_2), (hori_2_5, vert_2_5, diag_2_5)),
+    wavelet="db3",
+)
 
 # Plot the reconstructed image
 plot_reconstruct_image(

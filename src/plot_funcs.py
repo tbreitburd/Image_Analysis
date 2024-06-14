@@ -36,6 +36,8 @@ def plot_fitted_lines(x, y, params, title, path):
     plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
 
+    plt.close()
+
 
 def plot_signal_vector(vector, title="Measured Signal", path="q2.2_signal_vector.png"):
     plt.figure(figsize=(5, 4))
@@ -50,6 +52,8 @@ def plot_signal_vector(vector, title="Measured Signal", path="q2.2_signal_vector
 
     plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
+
+    plt.close()
 
 
 def plot_riverside(image, title="Riverside Image", path="q2.3_riverside.png"):
@@ -71,6 +75,8 @@ def plot_riverside(image, title="Riverside Image", path="q2.3_riverside.png"):
 
     plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
+
+    plt.close()
 
 
 def plot_daubechies(approx, hori, vert, diag, title, path):
@@ -114,6 +120,8 @@ def plot_daubechies(approx, hori, vert, diag, title, path):
     plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
 
+    plt.close()
+
 
 def plot_reconstruct_image(im, reconstructed_im, path):
     """!@brief Function to plot the reconstructed image
@@ -141,6 +149,8 @@ def plot_reconstruct_image(im, reconstructed_im, path):
 
     plot_dir = os.path.join(plots_dir, path)
     plt.savefig(plot_dir)
+
+    plt.close()
 
 
 def plot_tulips_hsv(tulips_hsv):
