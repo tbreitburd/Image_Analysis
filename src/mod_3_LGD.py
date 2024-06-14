@@ -22,7 +22,7 @@ astra.test()
 # -----------------------------------------------------------
 
 
-def plot_grd_truth_FBP(phantom_np, data_np, fbp_np, data_range, psnr_fbp, ssim_fbp):
+def plot_grd_truth_FBP(phantom_np, data_np, fbp_np, psnr_fbp, ssim_fbp):
     """!@brief Function to plot the ground-truth, sinogram, and FBP image
 
     @param phantom_np the ground-truth image, numpy array
@@ -53,9 +53,7 @@ def plot_grd_truth_FBP(phantom_np, data_np, fbp_np, data_range, psnr_fbp, ssim_f
     plt.xticks([])
     plt.yticks([])
     plt.title("FBP")
-    data_range = np.max(phantom_np) - np.min(phantom_np)
-    psnr_fbp = compare_psnr(phantom_np, fbp_np, data_range=data_range)
-    ssim_fbp = compare_ssim(phantom_np, fbp_np, data_range=data_range)
+
     plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_fbp, ssim_fbp))
     plt.gcf().set_size_inches(9.0, 6.0)
 
@@ -64,13 +62,11 @@ def plot_grd_truth_FBP(phantom_np, data_np, fbp_np, data_range, psnr_fbp, ssim_f
     plots_dir = os.path.join(cur_dir, "Plots")
     os.makedirs(plots_dir, exist_ok=True)
 
-    plot_dir = os.path.join(plots_dir, "q3.1_grd_truth_FBP.png")
+    plot_dir = os.path.join(plots_dir, "q3.2_grd_truth_FBP.png")
     plt.savefig(plot_dir)
 
 
-def plot_ADMM_FBP(
-    phantom_np, fbp_np, x_admm_np, data_range, psnr_fbp, ssim_fbp, psnr_tv, ssim_tv
-):
+def plot_ADMM_FBP(phantom_np, fbp_np, x_admm_np, psnr_fbp, ssim_fbp, psnr_tv, ssim_tv):
     """!@brief Function to plot the ground-truth, FBP, and ADMM image
 
     @param phantom_np the ground-truth image, numpy array
@@ -103,8 +99,7 @@ def plot_ADMM_FBP(
     plt.xticks([])
     plt.yticks([])
     plt.title("TV")
-    psnr_tv = compare_psnr(phantom_np, x_admm_np, data_range=data_range)
-    ssim_tv = compare_ssim(phantom_np, x_admm_np, data_range=data_range)
+
     plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_tv, ssim_tv))
     plt.gcf().set_size_inches(9.0, 6.0)
 
@@ -113,7 +108,7 @@ def plot_ADMM_FBP(
     plots_dir = os.path.join(cur_dir, "Plots")
     os.makedirs(plots_dir, exist_ok=True)
 
-    plot_dir = os.path.join(plots_dir, "q3.1_grd_truth_FBP_ADMM.png")
+    plot_dir = os.path.join(plots_dir, "q3.2_grd_truth_FBP_ADMM.png")
     plt.savefig(plot_dir)
 
 
@@ -122,11 +117,12 @@ def plot_ADMM_FBP_LGD(
     fbp_np,
     x_admm_np,
     lgd_recon_np,
-    data_range,
     psnr_fbp,
     ssim_fbp,
     psnr_tv,
     ssim_tv,
+    psnr_lgd,
+    ssim_lgd,
 ):
     """!@brief Function to plot the ground-truth, FBP, ADMM, and LGD image
 
@@ -170,8 +166,7 @@ def plot_ADMM_FBP_LGD(
     plt.xticks([])
     plt.yticks([])
     plt.title("LGD")
-    psnr_lgd = compare_psnr(phantom_np, lgd_recon_np, data_range=data_range)
-    ssim_lgd = compare_ssim(phantom_np, lgd_recon_np, data_range=data_range)
+
     plt.xlabel("PSNR: {:.2f} dB, SSIM: {:.2f}".format(psnr_lgd, ssim_lgd))
     plt.gcf().set_size_inches(12.0, 6.0)
 
@@ -180,7 +175,7 @@ def plot_ADMM_FBP_LGD(
     plots_dir = os.path.join(cur_dir, "Plots")
     os.makedirs(plots_dir, exist_ok=True)
 
-    plot_dir = os.path.join(plots_dir, "q3.1_grd_truth_FBP_ADMM_LGD.png")
+    plot_dir = os.path.join(plots_dir, "q3.2_grd_truth_FBP_ADMM_LGD.png")
     plt.savefig(plot_dir)
 
 
@@ -223,7 +218,7 @@ ssim_fbp = compare_ssim(phantom_np, fbp_np, data_range=data_range)
 # -----------------------------------------------------------
 # Display the ground truth, FBP reconstruction, and the sinogram
 # -----------------------------------------------------------
-plot_grd_truth_FBP(phantom_np, data_np, fbp_np, data_range, psnr_fbp, ssim_fbp)
+plot_grd_truth_FBP(phantom_np, data_np, fbp_np, psnr_fbp, ssim_fbp)
 
 
 # -----------------------------------------------------------
@@ -285,11 +280,14 @@ odl.solvers.admm_linearized(x_admm_odl, f, g, L, tau, sigma, niter, callback=Non
 x_admm_np = x_admm_odl.__array__()
 
 # Let's display the image reconstructed by ADMM and compare it with FBP
-plot_ADMM_FBP(phantom_np, fbp_np, x_admm_np)
+psnr_tv = compare_psnr(phantom_np, x_admm_np, data_range=data_range)
+ssim_tv = compare_ssim(phantom_np, x_admm_np, data_range=data_range)
+plot_ADMM_FBP(phantom_np, fbp_np, x_admm_np, psnr_fbp, ssim_fbp, psnr_tv, ssim_tv)
 
 # -----------------------------------------------------------
 # Set up the LGD algorithm in PyTorch
 # -----------------------------------------------------------
+print("Setting up the LGD algorithm in PyTorch...")
 
 # Check if a GPU is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -353,8 +351,25 @@ for epoch in range(0, num_epochs):
     if epoch % 100 == 0:
         print("Epoch = {}, Loss = {}".format(epoch, loss.item()))
 
+# Evaluate the model and save its learned parameters
+lgd_net.eval()
+torch.save(lgd_net.state_dict(), "./lgd_net.pth")
+
 # Convert the reconstruction to a numpy array
 lgd_recon_np = recon.detach().cpu().numpy().squeeze()
 
 # Let's display the reconstructed images by LGD and compare it with FBP and ADMM
-plot_ADMM_FBP_LGD(phantom_np, fbp_np, x_admm_np, lgd_recon_np)
+psnr_lgd = compare_psnr(phantom_np, lgd_recon_np, data_range=data_range)
+ssim_lgd = compare_ssim(phantom_np, lgd_recon_np, data_range=data_range)
+plot_ADMM_FBP_LGD(
+    phantom_np,
+    fbp_np,
+    x_admm_np,
+    lgd_recon_np,
+    psnr_fbp,
+    ssim_fbp,
+    psnr_tv,
+    ssim_tv,
+    psnr_lgd,
+    ssim_lgd,
+)
