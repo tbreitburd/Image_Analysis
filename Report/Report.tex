@@ -153,24 +153,43 @@
 
 \section{Exercise 1.1}
 
-In this exercise, 3 images were used to test different segmetentation methods. For each image, a specific segmentation objective was set, and 3 differemt main algorithms were used to segment the images, alomg with some additional methods.
+In this exercise, 3 images were used to test different segmetentation methods. For each image, a specific segmentation objective was set, and 3 differemt main algorithms were used to segment the images, along with some additional methods.
 
 \subsection{Image 1: \texttt{CT.png}}
 
-The first image, \texttt{CT.png}, is a CT scan of a human torso. The objective of this segmentation is to segment the lungs from the rest of the image, including any tissue or nodule inside it. This segmentation was done using a region-growing algorithm. EXPLAIN. The first part of the segmentation was to divide the image into regions, from which it was then possible to set seeds for the region-growing algorithm inside each lung. This was done using thresholding and closing. Thresholding is a simple method to segment an image by setting a threshold value, and then creating a binary image where all pixels above the threshold are set to 1 (0 otherwise). Setting the threshold value is done by selecting the value which maximises the between-class variance of the resulting binary image. CLosing is a morphological operation that is used to fill in small holes (locations with value 0) in the binary image. The first step is to grow then erode????
+The first image, \texttt{CT.png}, is a CT scan of a human torso. The objective of this segmentation is to segment the lungs from the rest of the image, including any tissue or nodule inside it. This segmentation was done using a region-growing algorithm. Region-growing (or the \texttt{skimage.segmentation.flood\_fill} function) is a conceptually simple algorithm. Starting from a seed-pixel with a certain value, the algorithm grows the region by adding neighbouring pixels that are within a certain threshold of the current region. This is done iteratively until the region stops growing\cite{skimage_flood_fill}\cite[pp.764-766]{gonzalez2002digital}.
 
-Once this was done, regions were identified. This is done by taking each continuous area of a single value in the binary image, and assigning it a unique label. From there, the lungs were identified as the 2 smallest regions. The seeds for the region-growing algorithm were then set as one of the points in that region (centroids are less robust as they could be outside the actual region, if it is not convex). The region-growing algorithm then grows the region by adding neighbouring pixels that are within a certain threshold of the current region. This is done iteratively until the region stops growing. The entire process is shown in Figure \ref{fig:ct_segmentation}.
+The first part of the segmentation was to divide the image into regions, from which it was then possible to set seeds for the region-growing algorithm inside each lung. Getting the regions was done using thresholding and closing. Thresholding is a simple image processing method where by setting a threshold value, one creates a binary image where all pixels above the threshold are set to 1 (0 otherwise)\cite[p.743]{gonzalez2002digital}. Setting the threshold value is done by selecting the value which maximises the between-class variance of the resulting binary image\cite[pp. 747-751]{gonzalez2002digital}. Closing is a morphological operation that is used to fill in small holes (locations with value 0) in the binary image. The first step is to dilate the image then erode it\cite[pp.645-648]{gonzalez2002digital}. Erosion and dilation are two morphological operation that can be considered as filtering operation. The former filters image details smallet than the structuring element, which is a small template set of pixels used to filter the image\cite[pp. 636-638]{gonzalez2002digital}. The latter filters images in a similar way, but by switching what is considered the background of the image and what is cosnidered an object. Here, this means that erosion will remove small 1-valued regions, while dilation will remove small 0-valued regions.
+
+Once this is done, regions are identified. This is done by taking each continuous area of a single value in the binary image, and assigning it a unique label\cite{skimage_measure_label}. From there, the lungs were identified as the 2 smallest regions. The seeds for the region-growing algorithm were then set as the middle point in that region (not centroid, but middle of the array). The region-growing algorithm is then used, obtaining segmentations of the lungs. Thresholding and closing where then again used to get smooth and continuous segmentations. This entire process is shown in Figure \ref{fig:ct_segmentation}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{../Plots/CT_Segmentation.png}
+    \includegraphics[width=0.8\textwidth]{../Plots/CT_Segmentation.png}
     \caption{The segmentation of the \texttt{CT.png} image.}
     \label{fig:ct_segmentation}
 \end{figure}
 
 \subsection{Image 2: \texttt{noisy\_flower.jpg}}
 
-Here, the task was to segment purple tulips from an image of a Dutch tulip field. The main challenge here was the presence of noise in the image rendering the
+Here, the task was to segment purple tulips from an image of a Dutch tulip field. The main challenge here was the presence of noise in the image, resulting in the purple tulips not being a uniform colour, and other tulips containing some purple. Since the main information here is the color and not so much the brightness of the image, the segmentation was done in the HSV color space. This is a color space that encodes images as hue (color), saturation (intensity of that color), and value (brightness) making it easier to segment based on color\cite{wiki_hsv}. Plotting grayscale images of each of those channels (see Figure \ref{fig:flower_hsv}), it can be seen that the hue channel is most useful for segmentation.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../Plots/tulip_hsv.png}
+    \caption{The HSV channels of the \texttt{noisy\_flower.jpg} image.}
+    \label{fig:flower_hsv}
+\end{figure}
+
+It can also be seen that, conveniently, the purple hue is close to the largest value on the spectrum, with the exception of red which is at both extremities. And looking at the histogram of the hue channel, with hue overlaid, one can see that using a single threshold may already be very helpful in segmenting the image (see \ref{fig:hsv_hist}). The resulting image will be a noisy binary image. But using opening and gaussian blurr...Then chan vese, final result...
+
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{../Plots/tulip_hsv_hist.png}
+%     \caption{The histogram of the hue channel of the \texttt{noisy\_flower.jpg} image.}
+%     \label{fig:hsv_hist}
+% \end{figure}
+
 
 \subsection{Image 3: \texttt{coins.png}}
 
