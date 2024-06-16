@@ -601,7 +601,7 @@ where $y$ is the noisy sinogram of the image to be reconstructed, $A$ is the mea
     \label{fig:tv_reconstruction}
 \end{figure}
 
-The second method uses a neural network to solve the same problem, with a learned gradient descent (LGD) algorithm. The network is trained on the Shepp-Logan phantom image, and the results are shown in Figure \ref{fig:learned_reconstruction}.
+The second method uses a neural network to solve the same problem, with a learned gradient descent (LGD) algorithm. The neural network is based on a shallow 3-layer convolutionnal neural network (CNN) which takes in the current prediction and the gradient of the fidelity term. The predicted reconstruction is then obtained by iteratively (5 iterations) updating the prediction with gradient descent. The parameters that the network learns are related to the learning rate of that gradient descent, hence learned gradient descent. The network is trained on the Shepp-Logan phantom image, and the results are shown in Figure \ref{fig:learned_reconstruction}.
 
 \begin{figure}[htbp]
     \centering
@@ -613,8 +613,7 @@ The second method uses a neural network to solve the same problem, with a learne
 
 \subsection{Discussion}
 
-
-
+As can be clearly seen, the LGD does a much better job at reducing the FBP's noise
 
 
 \chapter{Appendix}
