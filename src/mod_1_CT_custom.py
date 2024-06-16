@@ -171,7 +171,7 @@ cur_dir = os.getcwd()
 plots_dir = os.path.join(cur_dir, "Plots")
 os.makedirs(plots_dir, exist_ok=True)
 
-plot_dir = os.path.join(plots_dir, "CT_Segmentation.png")
+plot_dir = os.path.join(plots_dir, "CT_Segmentation_custom.png")
 plt.savefig(plot_dir)
 
 plt.close()
