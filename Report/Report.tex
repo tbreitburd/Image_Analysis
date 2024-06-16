@@ -577,29 +577,45 @@ However, when applying the gradient descent algorithm, setting the learning rate
 
 \section{Exercise 3.2}
 
-In this exercise the 2 methods mentionned at the start of this chapter are compared. The first method implements the ADMM algorithm\cite{boyd2011distributed} to solve a Total Variation regularized reconstruction problem for the Shepp-Logan phantom image. The TV-regularized reconstruction problem is given by:
+In this exercise the 2 methods mentionned at the start of this chapter are compared. The image considered is the Shepp-Logan phantom, and is showm in Figure \ref{fig:fbp_reconstruction}, along with the image's sinogram and its filtered back-projection (FBP) reconstruction. In both methdos, the FBP reconstruction will be used as initialization.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q3.2_grd_truth_FBP.png}
+    \caption{The Shepp-Logan phantom image, its sinogram, and its FBP reconstruction.}
+    \label{fig:fbp_reconstruction}
+\end{figure}
+
+The first method implements the ADMM algorithm to solve a Total Variation (TV) regularized reconstruction problem for the Shepp-Logan phantom image. The ADMM algorithm relies on the use of a variable splitting method, decomposing the problem into smaller subproblems, and then alternatingly updating these\cite{boyd2011distributed}. The TV-regularized reconstruction problem is given by:
 
 \begin{equation}
     \min_{u} ||y - Ax||^2_2 + \lambda ||\nabla x||_1
 \end{equation}
 
-where $y$ is the noisy sinogram of the image to be reconstructed, $A$ is the measurement matrix, $x$ is the image to be reconstructed, $\lambda$ is the regularization parameter, and $\nabla x$ is the gradient of the image. The ADMM algorithm is used to solve this problem, and the results are shown in Figure \ref{fig:tv_reconstruction}.
+where $y$ is the noisy sinogram of the image to be reconstructed, $A$ is the measurement matrix, $x$ is the image to be reconstructed, $\lambda$ is the regularization parameter, and $\nabla x$ is the gradient of the image. The ADMM algorithm is used to solve this problem and find $u$ that minimises the TV, and the results are shown in Figure \ref{fig:tv_reconstruction}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{../Plots/q3.2_grd_truth_FBP.png}
+    \includegraphics[width=0.5\textwidth]{../Plots/q3.2_grd_truth_FBP_ADMM.png}
     \caption{The TV-regularized reconstruction of the Shepp-Logan phantom image.}
     \label{fig:tv_reconstruction}
 \end{figure}
 
-The second method uses a neural network to solve the same problem, but with a learned gradient descent algorithm. The network is trained on the Shepp-Logan phantom image, and the results are shown in Figure \ref{fig:learned_reconstruction}.
+The second method uses a neural network to solve the same problem, with a learned gradient descent (LGD) algorithm. The network is trained on the Shepp-Logan phantom image, and the results are shown in Figure \ref{fig:learned_reconstruction}.
 
-% \begin{figure}[htbp]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{../Plots/q3.2_grd_truth_FBP_ADMM_LGD.png}
-%     \caption{The learned gradient descent reconstruction of the Shepp-Logan phantom image.}
-%     \label{fig:learned_reconstruction}
-% \end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{../Plots/q3.2_grd_truth_FBP_ADMM_LGD.png}
+    \caption{The learned gradient descent reconstruction of the Shepp-Logan phantom image.}
+    \label{fig:learned_reconstruction}
+\end{figure}
+
+
+\subsection{Discussion}
+
+
+
+
 
 \chapter{Appendix}
 
