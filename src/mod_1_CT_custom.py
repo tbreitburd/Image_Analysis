@@ -102,6 +102,7 @@ def region_growing(image, seed, threshold=0.2):
     is_segmented = np.zeros_like(image, dtype=bool)
     unsegmented_pxl = [seed]
     seed_value = image[seed]
+    image_ = np.copy(image)
 
     while unsegmented_pxl:
         x, y = unsegmented_pxl.pop(0)
@@ -123,8 +124,8 @@ def region_growing(image, seed, threshold=0.2):
     for i in range(rows):
         for j in range(cols):
             if is_segmented[i, j]:
-                image[i, j] = 255
-    return image
+                image_[i, j] = 255
+    return image_
 
 
 # First one
