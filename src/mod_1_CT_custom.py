@@ -104,39 +104,38 @@ def region_growing(image, seed, threshold=0.2):
     - Segmented region as a binary mask.
     """
     rows, cols = image.shape
-    segmented = np.zeros_like(image, dtype=bool)
-    to_process = [seed]
+    is_segmented = np.zeros_like(image, dtype=bool)
+    unsegmented_pxl = [seed]
     seed_value = image[seed]
 
-    while to_process:
-        x, y = to_process.pop(0)
-        if not segmented[x, y]:
-            segmented[x, y] = True
+    while unsegmented_pxl:
+        x, y = unsegmented_pxl.pop(0)
+        if not is_segmented[x, y]:
+            is_segmented[x, y] = True
             neighbors = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
             for x_temp, y_temp in neighbors:
                 if (
                     0 <= x_temp < rows
                     and 0 <= y_temp < cols
-                    and not segmented[x_temp, y_temp]
+                    and not is_segmented[x_temp, y_temp]
                 ):
                     if (
-                        np.abs(float(image[x_temp, y_temp]) - float(seed_value))
-                        / seed_value
+                        np.abs(float(image[x_temp, y_temp]) - float(seed_value)) / 255
                         < threshold
                     ):
-                        to_process.append((x_temp, y_temp))
+                        unsegmented_pxl.append((x_temp, y_temp))
 
     for i in range(rows):
         for j in range(cols):
-            if segmented[i, j]:
+            if is_segmented[i, j]:
                 image[i, j] = 255
     return image
 
 
 # First one
-mask_flood = region_growing(ct, seed1, threshold=1)
+mask_flood = region_growing(ct, seed1, threshold=0.1)
 # Then the other
-mask_flood = region_growing(mask_flood, seed2, threshold=1)
+mask_flood = region_growing(mask_flood, seed2, threshold=0.1)
 # Threshold the image
 
 plt.imshow(mask_flood, cmap="gray")
