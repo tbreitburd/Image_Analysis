@@ -63,7 +63,7 @@ def plot_grd_truth_FBP(phantom_np, data_np, fbp_np, psnr_fbp, ssim_fbp):
     os.makedirs(plots_dir, exist_ok=True)
 
     plot_dir = os.path.join(plots_dir, "q3.2_grd_truth_FBP.png")
-    plt.savefig(plot_dir)
+    plt.savefig(plot_dir, bbox_inches="tight")
 
 
 def plot_ADMM_FBP(phantom_np, fbp_np, x_admm_np, psnr_fbp, ssim_fbp, psnr_tv, ssim_tv):
@@ -109,7 +109,7 @@ def plot_ADMM_FBP(phantom_np, fbp_np, x_admm_np, psnr_fbp, ssim_fbp, psnr_tv, ss
     os.makedirs(plots_dir, exist_ok=True)
 
     plot_dir = os.path.join(plots_dir, "q3.2_grd_truth_FBP_ADMM.png")
-    plt.savefig(plot_dir)
+    plt.savefig(plot_dir, bbox_inches="tight")
 
 
 def plot_ADMM_FBP_LGD(
@@ -176,7 +176,7 @@ def plot_ADMM_FBP_LGD(
     os.makedirs(plots_dir, exist_ok=True)
 
     plot_dir = os.path.join(plots_dir, "q3.2_grd_truth_FBP_ADMM_LGD.png")
-    plt.savefig(plot_dir)
+    plt.savefig(plot_dir, bbox_inches="tight")
 
 
 # -----------------------------------------------------------
