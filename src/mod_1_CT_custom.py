@@ -3,6 +3,7 @@ import skimage
 import matplotlib.pyplot as plt
 from skimage.measure import label
 from skimage.morphology import disk, closing
+import os
 
 # Load the image and reduce to 1 channel
 ct = skimage.io.imread("./data/CT.png")
@@ -55,16 +56,12 @@ def otsu_threshold(image):
 # First identify where the lungs are
 # ----------------------------------------
 
+# Threshold the image
 ct_thresh = otsu_threshold(ct)
-
-plt.imshow(ct_thresh, cmap="gray")
-plt.show()
 
 # Apply closing to remove the small objects
 ct_masked = closing(ct_thresh, disk(3))
 
-plt.imshow(ct_masked, cmap="gray")
-plt.show()
 
 # Identify regions in the thresholded image
 ct_regions = label(ct_masked)
@@ -83,8 +80,6 @@ idx2 = len(np.argwhere(ct_regions == indices[1])) // 2
 seed1 = tuple(np.argwhere(ct_regions == indices[0])[idx1])
 seed2 = tuple(np.argwhere(ct_regions == indices[1])[idx2])
 
-plt.imshow(ct_regions, cmap="tab10")
-plt.show()
 
 # ----------------------------------------
 # Region Growing
@@ -136,7 +131,47 @@ def region_growing(image, seed, threshold=0.2):
 mask_flood = region_growing(ct, seed1, threshold=0.1)
 # Then the other
 mask_flood = region_growing(mask_flood, seed2, threshold=0.1)
-# Threshold the image
 
-plt.imshow(mask_flood, cmap="gray")
-plt.show()
+# Threshold the image again
+threshold = 254
+
+binary = mask_flood > threshold
+
+# Apply closing to get rid of inter-lung tissue
+masked = closing(binary, disk(3))
+
+# ---------------------------------------
+# Plot the results
+# ---------------------------------------
+
+plt.style.use("seaborn-v0_8-darkgrid")
+
+fig, ax = plt.subplots(2, 2, figsize=(10, 10))
+
+ax[0, 0].imshow(ct, cmap="gray")
+ax[0, 0].set_title("(a) Original CT")
+ax[0, 0].grid(False)
+
+ax[0, 1].imshow(ct_regions, cmap="tab20")
+ax[0, 1].set_title("(b) Regions")
+ax[0, 1].grid(False)
+
+ax[1, 0].imshow(mask_flood, cmap="gray")
+ax[1, 0].set_title("(c) Region Growing")
+ax[1, 0].grid(False)
+
+ax[1, 1].imshow(masked, cmap="gray")
+ax[1, 1].set_title("(d) Segmented CT")
+ax[1, 1].grid(False)
+
+plt.suptitle("CT Segmentation")
+plt.tight_layout()
+# Save the plot
+cur_dir = os.getcwd()
+plots_dir = os.path.join(cur_dir, "Plots")
+os.makedirs(plots_dir, exist_ok=True)
+
+plot_dir = os.path.join(plots_dir, "CT_Segmentation.png")
+plt.savefig(plot_dir)
+
+plt.close()
