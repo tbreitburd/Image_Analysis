@@ -150,9 +150,9 @@ print("Seeds found.")
 # ----------------------------------------
 
 # First one
-mask_flood = region_growing(ct, seed1, threshold=0.1)
+mask_flood = region_growing(ct, seed1, threshold=0.15)
 # Then the other
-mask_flood = region_growing(mask_flood, seed2, threshold=0.1)
+mask_flood = region_growing(mask_flood, seed2, threshold=0.15)
 
 # Threshold the image again
 threshold = 254
