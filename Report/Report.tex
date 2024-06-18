@@ -170,6 +170,19 @@ Once this is done, regions are identified. This is done by taking each continuou
     \label{fig:ct_segmentation}
 \end{figure}
 
+\subsubsection{Using a custom implementation}
+
+For the final part of this exercise, a custom implementation of the same method is used to segment the coins. Custom code was only written for the Otsu thresholding and the region-growing algorithm, and the results are shown in Figure \ref{fig:CT_custom_segmentation}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../Plots/CT_Segmentation_custom.png}
+    \caption{The segmentation of the \texttt{CT.png} image using a custom implementation.}
+    \label{fig:CT_custom_segmentation}
+\end{figure}
+
+As can be seen in Figure \ref{fig:CT_custom_segmentation}, the custom implementation gives very similar results. The Otsu thresholding algorithm was coded following the description of how to find the maximum between-class variance \cite{baeldung_otsu_segmentation}. The region-growing algorithm was also coded following the description of the algorithm\cite{baeldung_otsu_segmentation}, however the method was modified to apply a threshold on the normalised intensity difference between the current pixel and the seed pixel, rather than taking the region mean. This was done to keep the algortihm lightweight as the region grows.
+
 \subsection{Image 2: \texttt{noisy\_flower.jpg}}
 
 Here, the task was to segment purple tulips from an image of a Dutch tulip field. The main challenge here was the presence of noise in the image, resulting in the purple tulips not being a uniform colour, and other tulips containing some purple. Since the main information here is the color and not so much the brightness of the image, the segmentation was done in the HSV color space. This is a color space that encodes images as hue (color), saturation (intensity of that color), and value (brightness) making it easier to segment based on color\cite{wiki_hsv}. Plotting grayscale images of each of those channels (see Figure \ref{fig:flower_hsv}), it can be seen that the hue channel is most useful for segmentation.
@@ -190,14 +203,18 @@ It can also be seen that, conveniently, the purple hue is close to the largest v
     \label{fig:hsv_hist}
 \end{figure}
 
-Finally, the main algorithm used for this image is the Chan-Vese segmentation algorithm\cite{chan1999active}. This algorithm performs well for objects without clear boundaries. It works by iteratively updating a level set to minimize an energy/loss function, defined as the sum of intensity difference from the average values inside and outside segmented regions\cite{skimage_chan_vese}. Finally, opening is applied to the segmented image to remove small regions segmented by Chan-Vese from the noise, which do not correspond to the purple tulips. The result of this complete process is shown in Figure \ref{fig:tulip_segmentation}.
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{../Plots/tulip_segmentation.png}
     \caption{The segmentation process of the \texttt{noisy\_flower.jpg} image.}
     \label{fig:tulip_segmentation}
 \end{figure}
+
+\newpage
+
+Finally, the main algorithm used for this image is the Chan-Vese segmentation algorithm\cite{chan1999active}. This algorithm performs well for objects without clear boundaries. It works by iteratively updating a level set to minimize an energy/loss function, defined as the sum of intensity difference from the average values inside and outside segmented regions\cite{skimage_chan_vese}. Finally, opening is applied to the segmented image to remove small regions segmented by Chan-Vese from the noise, which do not correspond to the purple tulips. The result of this complete process is shown in Figure \ref{fig:tulip_segmentation}.
+
+\newpage
 
 \subsection{Image 3: \texttt{coins.png}}
 
@@ -236,7 +253,6 @@ Third, K-means clustering is used to segment all the coins in the image. By sett
     \caption{The segmentation of the 4th coin in the 4th row.}
     \label{fig:coin_27_segmentation}
 \end{figure}
-
 
 \chapter{Inverse Problems and Multiresolution Analysis}
 
@@ -400,7 +416,6 @@ In order to reconstruct the original signal, the iterative soft thresholding alg
         \end{algorithmic}
     This could also be set up as a while loop, where the algorithm stops when the difference between the current and previous estimate is below a certain threshold, i.e. when it converges
 \end{definitionbox}
-
 
 
 \subsection{Discussion}
