@@ -9,6 +9,77 @@
 
 import numpy as np
 from plot_funcs import plot_signal_vector
+import matplotlib.pyplot as plt
+
+# ------------------------------------------
+# Define the signal reconstruction functions
+# ------------------------------------------
+
+
+def fftc(x):
+    """!@brief Compute the centered FFT of a signal.
+
+    @param x: The input signal.
+
+    @return The centered FFT of the input signal.
+    """
+
+    return 1 / np.sqrt(len(x)) * np.fft.fftshift(np.fft.fft(np.fft.ifftshift(x)))
+
+
+def ifftc(x):
+    """!@brief Compute the centered inverse FFT of a signal.
+
+    @param x: The input signal.
+
+    @return The centered inverse FFT of the input signal.
+    """
+
+    return np.sqrt(len(x)) * np.fft.ifftshift(np.fft.ifft(np.fft.fftshift(x)))
+
+
+def SoftThresh(x, lam):
+    """!@brief Perform soft thresholding on a signal.
+
+    @param x: The input signal.
+    @param lam: The soft threshold value.
+
+    @return The soft thresholded signal.
+    """
+
+    # Compute the difference between the signal and the threshold
+    diff = abs(x) - lam
+
+    # Apply the soft thresholding
+    soft_thresh = (diff > 0.0) * diff * x / abs(x)
+
+    return soft_thresh
+
+
+# Define the ISTA function
+def iterative_soft_thresholding(X, Y, lam, n_iter=100):
+    """!@brief Perform iterative soft thresholding on a signal.
+
+    @param X: The signal in the frequency domain.
+    @param Y: The observed signal.
+    @param lam: The soft threshold value.
+    @param n_iter: The number of iterations.
+
+    @return The reconstructed signal.
+    """
+
+    for i in range(n_iter):
+        # Compute the inverse FT of the signal
+        x = ifftc(X)
+        # Apply soft-thresholding
+        x = SoftThresh(x, lam)
+        # Compute the FT of the signal back
+        # and apply data consistency constraint
+        X = fftc(x)
+        X[Y != 0] = Y[Y != 0]
+
+    return ifftc(X)  # Final inverse transform to time domain
+
 
 # ------------------------------------------
 # a) Generate vector, 10 non-zero entries
@@ -42,44 +113,65 @@ plot_signal_vector(vector)
 # compute 4 * zero-filled inverse FT
 # ------------------------------------------
 
+# Compute the FT of the noisy vector
+vector_ft = fftc(vector)
+
 # Take 32 uniformly spaced samples from the noisy vector
 unif_mask = np.linspace(0, 99, 32, dtype=int)
-data_unif = vector[unif_mask]
+X_unif = np.zeros(100, dtype=complex)
+X_unif[unif_mask] = vector_ft[unif_mask]
+x_unif = ifftc(X_unif) * 4
 
 # Take 32 randomly spaced samples from the noisy vector
-rand_mask = np.random.choice(range(100), 32, replace=False)
-data_rand = vector[rand_mask]
-
-# Compute the inverse FT and multiply by 4
-unif_sig = np.fft.ifft(data_unif) * 4
-rand_sig = np.fft.ifft(data_rand) * 4
-
-# Zero-fill the signals
-alia_signal = np.zeros(100, dtype=complex)
-alia_signal[unif_mask] = unif_sig
-
-noisy_signal = np.zeros(100, dtype=complex)
-noisy_signal[rand_mask] = rand_sig
+rand_mask = np.random.choice(100, 32, replace=False)
+X_rand = np.zeros(100, dtype=complex)
+X_rand[rand_mask] = vector_ft[rand_mask]
+x_rand = ifftc(X_rand) * 4
 
 # Plot the signals
 plot_signal_vector(
-    np.abs(alia_signal), "Uniformly Undersampled Signal", "q2.2_uniform_signal.png"
+    np.real(x_unif), "Uniformly Undersampled Signal", "q2.2_uniform_signal.png"
 )
 plot_signal_vector(
-    np.abs(noisy_signal), "Randomly Undersampled Signal", "q2.2_random_signal.png"
+    np.real(x_rand), "Randomly Undersampled Signal", "q2.2_random_signal.png"
 )
 
 # ------------------------------------------
 # e) Reconstruct the signal using the ISTA
 # ------------------------------------------
 
-# Define the iterative soft thresholding algorithm
+X_unif_temp = X_unif.copy()
+X_rand_temp = X_rand.copy()
+
+x_unif_rec = iterative_soft_thresholding(X_unif_temp, X_unif, 0.04)
+x_rand_rec = iterative_soft_thresholding(X_rand_temp, X_rand, 0.04)
 
 
-def soft_thresh(x, lam):
-    return np.sign(x) * np.maximum(np.abs(x) - lam, 0)
+# ------------------------------------------
+# Plot the reconstructed signals
+# ------------------------------------------
 
+plt.figure(figsize=(12, 12))
 
-def ista(y, A, lam, num_iter=100):
-    x_hat = np.zeros(100)
-    return x_hat
+plt.subplot(5, 1, 1)
+plt.stem(np.real(vector), label="Original Signal")
+plt.legend()
+
+plt.subplot(5, 1, 2)
+plt.stem(np.real(x_unif), label="Undersampled Noisy Signal (Uniform)")
+plt.legend()
+
+plt.subplot(5, 1, 3)
+plt.stem(np.real(x_rand), label="Undersampled Noisy Signal (Random)")
+plt.legend()
+
+plt.subplot(5, 1, 4)
+plt.stem(np.real(x_unif_rec), label="Reconstructed Signal (Uniform)")
+plt.legend()
+
+plt.subplot(5, 1, 5)
+plt.stem(np.real(x_rand_rec), label="Reconstructed Signal (Random)")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
