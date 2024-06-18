@@ -2,7 +2,10 @@
 
 @brief This file contains code for the segmentation of the tulips image
 
-@detail Uses...
+@details The tulips are segmented using the Hue channel of the HSV color space.
+The image is thresholded using Otsu's method, and opening is applied
+to remove the small white spots. The Chan-Vese segmentation algorithm is then applied
+to segment the tulips. The final mask is then opened to remove any remaining noise.
 
 @author T.Breitburd on 09/06/2024"""
 
@@ -47,6 +50,8 @@ tulips_mask = tulips_hsv[:, :, 0] > thresh
 # Apply opening to remove the small white spots, and keep the larger ones (purple tulips)
 op_mask = opening(tulips_mask)
 
+print("Image thresholded.")
+
 # Gaussian blur to smooth the mask
 blurred_mask = skimage.filters.gaussian(op_mask, sigma=2)
 
@@ -55,6 +60,8 @@ cv_mask = chan_vese(blurred_mask, mu=0.1, lambda2=1.5)
 
 # Apply opening
 cv_mask_op = opening(cv_mask, disk(4))
+
+print("Segmentation done.")
 
 # ----------------------------------------
 # Plot the results

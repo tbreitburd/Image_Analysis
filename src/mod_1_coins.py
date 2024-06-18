@@ -3,8 +3,12 @@
 @brief This module contains code for the segmentation of the coins
 
 @details This module contains the code for the segmentation of the coins.
-This is done by first removing the "corruption" lines
+This is done by first removing the "corruption" lines using inpainting, then
+increasing the contrast of the image, removing the background using a rolling ball algorithm,
+and finally segmenting the coins using K-means clustering.
+The coins are then labelled and the results are plotted.
 
+@author T. Breitburd on 09/06/2024
 """
 import numpy as np
 import os
@@ -33,9 +37,11 @@ coins = coins[:, :, 0]
 # Now we will remove the "corruption" lines
 mask = coins == 0
 coins_inpaint = inpaint.inpaint_biharmonic(coins, mask)
+print("Lines inpainting done.")
 
 # To facilitate the segmentation, we increase the contrast
 coins_rescaled = rescale_intensity(coins_inpaint, in_range=(0.2, 0.8), out_range=(0, 1))
+print("Contrast increased.")
 
 # Shift image back to 0-255
 coins_rescaled = np.array(coins_rescaled * 255, dtype=np.uint8)
@@ -51,6 +57,7 @@ background = rolling_ball(coins_rescaled, radius=30)
 # Subtract the background
 coins_no_background = coins_rescaled - background
 
+print("Background removed.")
 
 # ----------------------------------------
 # Use K-means to segment the coins
@@ -65,6 +72,7 @@ coins_segmented = kmeans.labels_.reshape(coins_no_background.shape)
 
 # Close the image
 coins_segmented = closing(coins_segmented, disk(2))
+print("Coins segmented.")
 
 # ----------------------------------------
 # Label the coins

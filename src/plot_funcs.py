@@ -19,6 +19,8 @@ def plot_fitted_lines(x, y, params, title, path):
 
     @param x x values, numpy array
     @param params a, b the slope and intercept of the fitted line, tuple
+    @param title the title of the plot, string
+    @param path the path to save the plot, string
 
     @return None"""
 
@@ -40,6 +42,16 @@ def plot_fitted_lines(x, y, params, title, path):
 
 
 def plot_signal_vector(vector, title="Measured Signal", path="q2.2_signal_vector.png"):
+    """!@brief Function to plot the signal vector
+
+    @param vector the signal vector to plot, numpy array
+    @param title the title of the plot, string
+    Default: "Measured Signal"
+    @param path the path to save the plot, string
+    Default: "q2.2_signal_vector.png"
+
+    @return None"""
+
     plt.figure(figsize=(5, 4))
     plt.stem(vector)
     plt.ylim(-0.25, 1)
@@ -60,6 +72,10 @@ def plot_riverside(image, title="Riverside Image", path="q2.3_riverside.png"):
     """!@brief Function to plot the riverside image
 
     @param image the image to plot, numpy array
+    @param title the title of the plot, string
+    Default: "Riverside Image"
+    @param path the path to save the plot, string
+    Default: "q2.3_riverside.png"
 
     @return None"""
 
@@ -86,6 +102,8 @@ def plot_daubechies(approx, hori, vert, diag, title, path):
     @param hori the horizontal detail coefficients, numpy array
     @param vert the vertical detail coefficients, numpy array
     @param diag the diagonal detail coefficients, numpy array
+    @param title the title of the plot, string
+    @param path the path to save the plot, string
 
     @return None"""
 
@@ -128,6 +146,7 @@ def plot_reconstruct_image(im, reconstructed_im, path):
 
     @param im the original image, numpy array
     @param reconstructed_im the reconstructed image, numpy array
+    @param path the path to save the plot, string
 
     @return None"""
 

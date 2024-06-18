@@ -1,3 +1,15 @@
+"""!@file mod_1_CT_custom.py
+
+@brief CT Segmentation using custom region growing algorithm
+
+@details This module contains the code for the segmentation of a CT image.
+The lungs are segmented using a custom region growing algorithm, with the seeds
+being the 2 smallest regions in the thresholded image.
+
+@author T. Breitburd on 14/06/2024
+"""
+
+
 import numpy as np
 import skimage
 import matplotlib.pyplot as plt
@@ -52,6 +64,56 @@ def otsu_threshold(image):
     return image_
 
 
+def region_growing(image, seed, threshold=0.2):
+    """!@brief Perform region growing algorithm on an image,
+    from https://sbme-tutorials.github.io/2019/cv/notes/6_week6.html
+
+    @param image the image to segment, numpy array
+    @param seed the seed pixel, tuple
+    @param threshold the threshold to use, float
+
+    @return the segmented image, numpy array"""
+
+    # Get the image dimensions
+    rows, cols = image.shape
+
+    # Initialize the segmented image and the list of unsegmented pixels
+    is_segmented = np.zeros_like(image, dtype=bool)
+    unsegmented_pxl = [seed]
+    seed_value = image[seed]
+    image_ = np.copy(image)
+
+    # While there are unsegmented pixels
+    while unsegmented_pxl:
+        # Get the next unssegmented pixel
+        x, y = unsegmented_pxl.pop(0)
+        if not is_segmented[x, y]:
+            is_segmented[x, y] = True
+
+            # Get the neighbors
+            neighbors = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
+            for x_temp, y_temp in neighbors:
+                # Check if the pixel is in the image (for edges) and not segmented
+                if (
+                    0 <= x_temp < rows
+                    and 0 <= y_temp < cols
+                    and not is_segmented[x_temp, y_temp]
+                ):
+                    # Check for similarity
+                    if (
+                        np.abs(float(image[x_temp, y_temp]) - float(seed_value)) / 255
+                        < threshold
+                    ):
+                        unsegmented_pxl.append((x_temp, y_temp))
+
+    # Set the segmented region to white
+    for i in range(rows):
+        for j in range(cols):
+            if is_segmented[i, j]:
+                image_[i, j] = 255
+    return image_
+
+
 # ----------------------------------------
 # First identify where the lungs are
 # ----------------------------------------
@@ -62,6 +124,7 @@ ct_thresh = otsu_threshold(ct)
 # Apply closing to remove the small objects
 ct_masked = closing(ct_thresh, disk(3))
 
+print("Image thesholded.")
 
 # Identify regions in the thresholded image
 ct_regions = label(ct_masked)
@@ -80,53 +143,11 @@ idx2 = len(np.argwhere(ct_regions == indices[1])) // 2
 seed1 = tuple(np.argwhere(ct_regions == indices[0])[idx1])
 seed2 = tuple(np.argwhere(ct_regions == indices[1])[idx2])
 
+print("Seeds found.")
 
 # ----------------------------------------
 # Region Growing
 # ----------------------------------------
-
-
-def region_growing(image, seed, threshold=0.2):
-    """
-    Perform region growing algorithm on an image.
-
-    Parameters:
-    - image: Grayscale image as a 2D numpy array.
-    - seed: Tuple (row, col) indicating the starting point for region growing.
-    - threshold: Similarity threshold to control the growth.
-
-    Returns:
-    - Segmented region as a binary mask.
-    """
-    rows, cols = image.shape
-    is_segmented = np.zeros_like(image, dtype=bool)
-    unsegmented_pxl = [seed]
-    seed_value = image[seed]
-    image_ = np.copy(image)
-
-    while unsegmented_pxl:
-        x, y = unsegmented_pxl.pop(0)
-        if not is_segmented[x, y]:
-            is_segmented[x, y] = True
-            neighbors = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-            for x_temp, y_temp in neighbors:
-                if (
-                    0 <= x_temp < rows
-                    and 0 <= y_temp < cols
-                    and not is_segmented[x_temp, y_temp]
-                ):
-                    if (
-                        np.abs(float(image[x_temp, y_temp]) - float(seed_value)) / 255
-                        < threshold
-                    ):
-                        unsegmented_pxl.append((x_temp, y_temp))
-
-    for i in range(rows):
-        for j in range(cols):
-            if is_segmented[i, j]:
-                image_[i, j] = 255
-    return image_
-
 
 # First one
 mask_flood = region_growing(ct, seed1, threshold=0.1)
@@ -140,6 +161,8 @@ binary = mask_flood > threshold
 
 # Apply closing to get rid of inter-lung tissue
 masked = closing(binary, disk(3))
+
+print("Region growing done.")
 
 # ---------------------------------------
 # Plot the results

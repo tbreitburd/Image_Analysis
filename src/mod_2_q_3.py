@@ -1,5 +1,11 @@
-"""!@file mod_2_q_2.py
-@brief Python script for question 2 of module 2."""
+"""!@file mod_2_q_3.py
+
+@brief Python script for question 3 of module 2.
+
+@details This script contains code to perform wavelet decomposition and thresholding on an image.
+
+@author T. Breitburd on 09/06/2024
+"""
 
 import pywt
 import numpy as np
@@ -55,7 +61,7 @@ plot_riverside(
     "q2.3_riverside_diff.png",
 )
 
-
+print("Daubechie wavelet transform complete.")
 # ------------------------------------------
 # b) Threshold the wavelet coefficients
 # ------------------------------------------
@@ -122,6 +128,7 @@ plot_daubechies(
     "q2.3_daubechies_thresh_15_2.png",
 )
 
+print("15% Thresholding complete.")
 # ------------------------------------------
 # c) Repeat the thresholding for different
 # percentages and reconstruct the image
@@ -241,6 +248,7 @@ plot_daubechies(
     "q2.3_daubechies_thresh_2_5_2.png",
 )
 
+print("Other Thresholding complete.")
 
 # Reconstruction of the images
 
@@ -296,6 +304,7 @@ plot_reconstruct_image(
     riverside, reconstructed_2_5, "q2.3_riverside_reconstructed_2_5.png"
 )
 
+print("Reconstruction complete.")
 # ------------------------------------------
 # Plot the difference between the original
 # and reconstructed images

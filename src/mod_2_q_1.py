@@ -1,5 +1,10 @@
 """!@file mod_2_q_1.py
-@brief Python script for question 1 of module 2."""
+
+@brief Python script for question 1 of module 2.
+
+@details This script contains code to fit a line to data using L1 and L2 minimization.
+
+@author T. Breitburd on 09/06/2024"""
 
 import numpy as np
 from scipy.optimize import minimize
@@ -9,13 +14,16 @@ from plot_funcs import plot_fitted_lines
 # https://docs.scipy.org/doc/scipy/tutorial/optimize.html#
 # constrained-minimization-of-multivariate-scalar-functions-minimize
 
-
 # Load the data
 y_line = np.loadtxt("./data/y_line.txt")
 y_outlier = np.loadtxt("./data/y_outlier_line.txt")
 
 # Define the x values, assuming they are given by indices
 x = np.arange(len(y_line))
+
+# ---------------------------
+# First for L1 minimization
+# ---------------------------
 
 
 # Define the L1 functions to minimize

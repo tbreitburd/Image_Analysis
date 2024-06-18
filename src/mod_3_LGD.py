@@ -1,5 +1,10 @@
 """!@file mod_3_LGD.py
 
+@brief Python script for question 2 of module 3.
+
+@details This script contains code to solve the TV reconstruction problem
+using the linearized ADMM algorithm and the Learned Gradient Descent (LGD) algorithm.
+
 @author T.Breitburd and Course Instructor on 12/06/24
 """
 
@@ -23,10 +28,11 @@ astra.test()
 
 
 def plot_grd_truth_FBP(phantom_np, data_np, fbp_np, psnr_fbp, ssim_fbp):
-    """!@brief Function to plot the ground-truth, sinogram, and FBP image
+    """!@brief Function to plot the ground-truth, sinogram, and Filtered Backprojection
+    reconstructed image.
 
     @param phantom_np the ground-truth image, numpy array
-    @param data_np the sinogram data, numpy array
+    @param data_np the sinogram, numpy array
     @param fbp_np the FBP image, numpy array
     @param data_range the data range, float
     @param psnr_fbp the PSNR of the FBP image, float
@@ -67,7 +73,7 @@ def plot_grd_truth_FBP(phantom_np, data_np, fbp_np, psnr_fbp, ssim_fbp):
 
 
 def plot_ADMM_FBP(phantom_np, fbp_np, x_admm_np, psnr_fbp, ssim_fbp, psnr_tv, ssim_tv):
-    """!@brief Function to plot the ground-truth, FBP, and ADMM image
+    """!@brief Function to plot the ground-truth, FBP, and ADMM reconstructed image
 
     @param phantom_np the ground-truth image, numpy array
     @param fbp_np the FBP image, numpy array
@@ -76,6 +82,7 @@ def plot_ADMM_FBP(phantom_np, fbp_np, x_admm_np, psnr_fbp, ssim_fbp, psnr_tv, ss
     @param psnr_fbp the PSNR of the FBP image, float
     @param ssim_fbp the SSIM of the FBP image, float
     @param psnr_tv the PSNR of the TV image, float
+    @param ssim_tv the SSIM of the TV image, float
 
     @return None"""
 
@@ -135,6 +142,8 @@ def plot_ADMM_FBP_LGD(
     @param ssim_fbp the SSIM of the FBP image, float
     @param psnr_tv the PSNR of the TV image, float
     @param ssim_tv the SSIM of the TV image, float
+    @param psnr_lgd the PSNR of the LGD image, float
+    @param ssim_lgd the SSIM of the LGD image, float
 
     @return None"""
 

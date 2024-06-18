@@ -3,7 +3,9 @@
 @brief This file contains the code for the 1st quesiton of the third module of the assignment.
 
 @details This code tests the convergence of the gradient descent minimization of the
-objective function
+objective function f(x) = 1/2 * x1^2 + x2^2.
+
+@author T. Breitburd on 12/06/2024
 """
 
 import numpy as np

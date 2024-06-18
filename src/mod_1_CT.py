@@ -2,7 +2,9 @@
 
 @brief This file contains code for the segmentation of the CT scan image
 
-@detail Uses...
+@detail The lungs are segmented using a region growing algorithm. The seeds for the
+region growing are the 2 smallest regions in the thresholded image. The image is
+thresholded using Otsu's method, and closing is applied to remove small objects.
 
 @author T.Breitburd on 09/06/2024"""
 
@@ -29,6 +31,9 @@ ct_thresh = ct < threshold
 
 # Apply closing to remove the small objects
 ct_masked = skimage.morphology.closing(ct_thresh, disk(3))
+
+print("Image thresholded.")
+
 # Identify regions in the thresholded image
 ct_regions = label(ct_masked)
 n_regions = len(np.unique(ct_regions))
@@ -46,6 +51,7 @@ idx2 = len(np.argwhere(ct_regions == indices[1])) // 2
 seed1 = tuple(np.argwhere(ct_regions == indices[0])[idx1])
 seed2 = tuple(np.argwhere(ct_regions == indices[1])[idx2])
 
+print("Seeds found.")
 # ----------------------------------------
 # Region Growing
 # ----------------------------------------
@@ -62,6 +68,8 @@ binary = mask_flood > threshold
 
 # Apply closing to get rid of inter-lung tissue
 masked = closing(binary, disk(3))
+
+print("Region growing done.")
 
 # ---------------------------------------
 # Plot the results

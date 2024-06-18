@@ -1,5 +1,10 @@
 """!@file mod_2_q_2.py
-@brief Python script for question 2 of module 2."""
+
+@brief Python script for question 2 of module 2.
+
+@details This script contains code to...
+
+@author T. Breitburd on 09/06/2024"""
 
 
 import numpy as np
