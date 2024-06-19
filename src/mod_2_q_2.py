@@ -8,6 +8,7 @@
 
 
 import numpy as np
+import os
 from plot_funcs import plot_signal_vector
 import matplotlib.pyplot as plt
 
@@ -174,4 +175,13 @@ plt.stem(np.real(x_rand_rec), label="Reconstructed Signal (Random)")
 plt.legend()
 
 plt.tight_layout()
-plt.show()
+
+# Save the plot
+cur_dir = os.getcwd()
+plots_dir = os.path.join(cur_dir, "Plots")
+os.makedirs(plots_dir, exist_ok=True)
+
+plot_dir = os.path.join(plots_dir, "q2.2_reconstructed_signals.png")
+plt.savefig(plot_dir)
+
+plt.close()
