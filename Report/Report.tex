@@ -346,7 +346,7 @@ It is clear that $l_{1}$ minimisation is more robust to outliers than $l_{2}$ mi
 
 \section{Exercise 2.2}
 
-In this exercise, the importance of random undersampling in compressed sensing theory. In order to do this, random and uniform undersampling will be compared in the reconstruction of a noisy signal, by solving:
+In this exercise, the importance of random undersampling in compressed sensing theory will be tested. In order to do this, random and uniform undersampling will be compared in the reconstruction of a noisy signal, by solving:
 
 \begin{equation}
     \text{arg} \min{(\frac{1}{2}||\mathcal{F}_{\Omega}\hat{x} - y||^{2}_{2} + \lambda |\hat{x}|_{1})}
@@ -354,6 +354,15 @@ In this exercise, the importance of random undersampling in compressed sensing t
 
 
 Using an iterative soft thresholding algorithm, with a data consistency constraint:
+
+\begin{equation}
+    \text{SoftThresh}(x, \lambda) =
+    \begin{cases}
+        x - \lambda & \text{if } x > \lambda \\
+        x + \lambda & \text{if } x < -\lambda \\
+        0 & \text{otherwise}
+    \end{cases}
+\end{equation}
 
 \begin{equation}
     \hat{f}_{i+1}[j] =
@@ -374,7 +383,7 @@ First, a noisy signal is created. This is done by first creating a zero-filled v
     \label{fig:noisy_signal}
 \end{figure}
 
-The signal is then undersampled using two methods: random and uniform. For random undersampling, 32 entries from the vector are sampled randomly (without repeats). For uniform undersampling, \texttt{numpy.linspace} was used to get 32 regularly spaced samples from the noisy signal. The inverse Fourier Transform of the undersampled signal is computed and then multiplied by 4. The resulting "measured" undersampled signals are shown in Figure \ref{fig:undersampled_signals}.
+To switch from the time to the frequency domain, the fourier transform of the noisy vector is taken. And it is then undersampled using two methods: random and uniform. For random undersampling, 32 entries from the vector are sampled randomly (without repeats). For uniform undersampling, \texttt{numpy.linspace} was used to get 32 regularly spaced samples from the noisy signal. The inverse Fourier Transform of the undersampled signal is computed and then multiplied by 4. The resulting "measured" undersampled signals are shown in Figure \ref{fig:undersampled_signals}.
 
 \begin{figure}[htbp]
     \centering
@@ -391,17 +400,15 @@ The signal is then undersampled using two methods: random and uniform. For rando
     \label{fig:undersampled_signals}
 \end{figure}
 
-With the undersampled signals the goal is now to reconstruct the original signal
+With the undersampled signals the goal is now to reconstruct the original signal using the Iterative Soft Thresholding Algorithm (ISTA).
 
 
 \subsection{The Iterative Soft Thresholding Algorithm}
 
-In order to reconstruct the original signal, the iterative soft thresholding algorithm is used. This algorithm is an iterative method that solves the  minimisation problem descirbed above by iteratively applying a soft thresholding function to the signal. The algorithm is as follows:
+In order to reconstruct the original signal, the ISTA is used. This algorithm is an iterative method that solves the minimisation problem descirbed above by iteratively applying a soft thresholding function to the signal, with the addition of a data consistency constraint. The algorithm is shown in Algorithm 1.
 
 \begin{definitionbox}{Algorithm 1: Iterative Soft Thresholding Algorithm}
     \begin{algorithmic}[1]
-
-        \State $\hat{X}_{0} \gets y$ \Comment{Initial guess}
         \For{$i \leq N_{iter}$} \Comment{Iterate $i = 0, 1, \dots, N_{iter}$}
             \State $\hat{x}_{i} \gets \mathcal{F}^{-1}\hat{X}_{i}$ \Comment{Get an estimate of the signal}
             \State $\hat{x}_{i} \gets \text{SoftThresh}(\hat{x}_{i}, \lambda)$ \Comment{Apply Soft Thresholding}
@@ -417,8 +424,17 @@ In order to reconstruct the original signal, the iterative soft thresholding alg
     This could also be set up as a while loop, where the algorithm stops when the difference between the current and previous estimate is below a certain threshold, i.e. when it converges
 \end{definitionbox}
 
-
 \subsection{Discussion}
+
+Using this method the reconstructions are obtained and shown in Figure \ref{fig:reconstructions}. As can be seen, the random undersampling method gives a better reconstruction of the original signal than the uniform undersampling method. This is due to the random undersampling method being more efficient at capturing the signal's features, as it is more likely to sample the signal's peaks and troughs. This is in contrast to the uniform undersampling method, which may miss these features if the samples are not taken at the right points.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{../Plots/q2.2_reconstructed_signals.png}
+    \caption{The reconstructions of the original signal using random and uniform undersampling.}
+    \label{fig:reconstructions}
+\end{figure}
+
 
 \section{Exercise 2.3}
 
