@@ -1,0 +1,64 @@
+# Image Analysis Coursework
+
+## Description
+This repository contains the code and written report for the Image Analysis Coursework. The aim was to study 3 aspects of image analysis: Segmentation, Inverse problems and multiresolution analysis, and solving inverse problems using model vs data driven reconstructions
+
+## Contents
+
+Inside this ```tmb76/``` directory, there are a few sub-directories one can explore. There's the code directory (```src/```), which contains all the code used for the project. An important note is that the code will give outputs in the command line but also store the plots in a ```Plots/``` directory which will be created as the first code file is run. So if there is no ```Plots/``` directory in the repository yet, running the code once should lead to creating one. Then there is the ```Report/``` directory, which contains the LaTeX file for the report, as well as the pdf version of it, along with the references ```.bib``` file. Finally, there is a ```data/``` directory which holds images and data files for the code.
+More importantly, there are an ```environment.yml``` and ```Dockerfile``` files, which one is advised to use.
+
+## How to run the code
+For permissions reasons, the ```Dockerfile``` is not set up to pull the repository directly as it builds the image. Therefore, one must first download this repository to their local machine and then are free to build the Docker image from the ```Dockerfile```.
+
+To run the solver on a Docker container, one first has to build the image and run the container. This can be done as follows:
+
+```bash
+$ docker build -t IA_coursework .
+$ docker run --rm -ti IA_coursework
+```
+
+The ```IA_coursework``` is not a strict instruction, it can be set to any other name the user may prefer.
+
+If there is a need to get the plots back on the local machine, the second line above can be ran without the ```--rm``` and can also set the container name using ```--name=container_name``` (any valid name is fine). From there, run all the code as instructed below. Once all desired outputs and plots have been obtained. One can exit the container and then run:
+
+```bash
+$ docker cp docker cp container_name:/IA_Coursework/Plots ./Plots
+```
+
+The ```Plots/``` directory will get copied into the local folder the container was ran from.
+
+As you run this, the Docker image will get built and the container ran, providing the user with a bash terminal-like interface where the solver code can be run as follows:
+
+- For Module 1 on segmentation:
+```bash
+$ python src/mod_1_*.py
+```
+
+where ```*``` can be either ```coins```, ```CT_custom```, ```CT```, or ```tulips```.
+
+- For Module 2 on Inverse Problems and multiresolution analysis
+```bash
+$ python src/mod_2_q_*.py
+```
+
+where ```*``` can be either ```1```, ```2```, or ```3```.
+
+- For Module 3, on solving inverse problems with different methods
+```bash
+$ python src/mod_3_*.py
+```
+
+where ```*``` can be either ```q_1``` or ```LGD```. If the ```LGD``` file is run, a ```skip_training``` argument must be specified in the command line: a boolean (True or False). If set to True, the code will load the trained model state and predict the reconstruction immediately, rather than training the neural network from scratch. Each contain the code to get the results those specific tasks/parts of the coursework.
+
+Note on time: Running the ```part_v.py``` file should take close to 2 minutes. Running the ```part_vii.py``` file should take longer, closer to 5-6 minutes. This is based on running all of these on a MacBook Air M2 (2022, Ventura 13.2.1), with 8 GB of Memory, so this may be slower on a container.
+
+
+## Further development
+
+If one wishes to further develop this code, such as adding more algorithms to try, when the image is built, git is installed and initialized and the pre-commit hooks are installed.
+
+## Use of Generative AI
+
+GitHub Copilot's autocompletion feature was used in coding the project, when writing docstrings for the functions, though sometimes adding elements ourselves, and for repetitive parts of the code.
+ChatGPT was also used to help in debugging the code, by providing the traceback as a prompt when an error was difficult to understand, asking to explain what the error refers to. Additionally, it was used to give suggestions on what package/function could be used for l1 minimization for which it recommended the ```scipy.optimize``` library. It was used for clarification on the ```np.random.permutation``` library. It was used when debugging issues with loading dependencies, by looking at the coursework given notebook and the commands used to install dependencies on the virtual environment to see differences and what could be the reason: got suggestion to look into what channels were used to load the dependencies.
