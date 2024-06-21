@@ -18,9 +18,11 @@ import torch
 import odl
 import odl.contrib.torch as odl_torch
 from neur_nets import LGD_net
+import sys
 
 astra.test()
 
+skip_training = sys.argv[1]
 
 # -----------------------------------------------------------
 # Plot functions from the given notebook (i.e. authored by the course instructor)
@@ -338,31 +340,39 @@ mse_loss = torch.nn.MSELoss()
 optimizer = torch.optim.Adam(lgd_net.parameters(), lr=1e-4)
 num_epochs = 2000
 
-# Training loop
-for epoch in range(0, num_epochs):
-    # ----------------------------------------
-    # Authored section of code by T. Breitburd
-    # ----------------------------------------
-
-    # Zero the gradients
-    optimizer.zero_grad()
+if skip_training:
+    # Load the learned parameters of the LGD network
+    lgd_net.load_state_dict(torch.load("./lgd_net.pth"))
 
     # Pass the input through the network, to get the reconstruction
     recon = lgd_net(y, x_init)
 
-    # Compute the loss
-    loss = mse_loss(recon, ground_truth)
+else:
+    # Training loop
+    for epoch in range(0, num_epochs):
+        # ----------------------------------------
+        # Authored section of code by T. Breitburd
+        # ----------------------------------------
 
-    # Backward pass and optimization step
-    loss.backward()
-    optimizer.step()
+        # Zero the gradients
+        optimizer.zero_grad()
 
-    if epoch % 100 == 0:
-        print("Epoch = {}, Loss = {}".format(epoch, loss.item()))
+        # Pass the input through the network, to get the reconstruction
+        recon = lgd_net(y, x_init)
 
-# Evaluate the model and save its learned parameters
-lgd_net.eval()
-torch.save(lgd_net.state_dict(), "./lgd_net.pth")
+        # Compute the loss
+        loss = mse_loss(recon, ground_truth)
+
+        # Backward pass and optimization step
+        loss.backward()
+        optimizer.step()
+
+        if epoch % 100 == 0:
+            print("Epoch = {}, Loss = {}".format(epoch, loss.item()))
+
+    # Evaluate the model and save its learned parameters
+    lgd_net.eval()
+    torch.save(lgd_net.state_dict(), "./lgd_net.pth")
 
 # Convert the reconstruction to a numpy array
 lgd_recon_np = recon.detach().cpu().numpy().squeeze()
