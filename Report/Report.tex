@@ -153,15 +153,15 @@
 
 \section{Exercise 1.1}
 
-In this exercise, 3 images were used to test different segmetentation methods. For each image, a specific segmentation objective was set, and 3 differemt main algorithms were used to segment the images, along with some additional methods.
+In this exercise, 3 images were used to test different segmentation methods. For each image, a specific segmentation objective was set, and 3 different main algorithms were used to segment the images, along with some additional methods.
 
 \subsection{Image 1: \texttt{CT.png}}
 
 The first image, \texttt{CT.png}, is a CT scan of a human torso. The objective of this segmentation is to segment the lungs from the rest of the image, including any tissue or nodule inside it. This segmentation was done using a region-growing algorithm. Region-growing (or the \texttt{skimage.segmentation.flood\_fill} function) is a conceptually simple algorithm. Starting from a seed-pixel with a certain value, the algorithm grows the region by adding neighbouring pixels that are within a certain threshold of the current region. This is done iteratively until the region stops growing\cite{skimage_flood_fill}\cite[pp.764-766]{gonzalez2002digital}.
 
-The first part of the segmentation was to divide the image into regions, from which it was then possible to set seeds for the region-growing algorithm inside each lung. Getting the regions was done using thresholding and closing. Thresholding is a simple image processing method where by setting a threshold value, one creates a binary image where all pixels above the threshold are set to 1 (0 otherwise)\cite[p.743]{gonzalez2002digital}. Setting the threshold value is done by selecting the value which maximises the between-class variance of the resulting binary image\cite[pp. 747-751]{gonzalez2002digital}. Closing is a morphological operation that is used to fill in small holes (locations with value 0) in the binary image. The first step is to dilate the image then erode it\cite[pp.645-648]{gonzalez2002digital}. Erosion and dilation are two morphological operation that can be considered as filtering operation. The former filters image details smallet than the structuring element, which is a small template set of pixels used to filter the image\cite[pp. 636-638]{gonzalez2002digital}. The latter filters images in a similar way, but by switching what is considered the background of the image and what is cosnidered an object. Here, this means that erosion will remove small 1-valued regions, while dilation will remove small 0-valued regions.
+The first part of the segmentation was to divide the image into regions, from which it was then possible to set seeds for the region-growing algorithm inside each lung. Getting the regions was done using thresholding and closing. Thresholding is a simple image processing method where by setting a threshold value, one creates a binary image where all pixels above the threshold are set to 1 (0 otherwise)\cite[p.743]{gonzalez2002digital}. Setting the threshold value is done by selecting the value which maximises the between-class variance of the resulting binary image\cite[pp. 747-751]{gonzalez2002digital}. Closing is a morphological operation that is used to fill in small holes (locations with value 0) in the binary image. The first step is to dilate the image then erode it\cite[pp.645-648]{gonzalez2002digital}. Erosion and dilation are two morphological operation that can be considered as filtering operation. The former filters image details smallet than the structuring element, which is a small template set of pixels used to filter the image\cite[pp. 636-638]{gonzalez2002digital}. The latter filters images in a similar way, but by switching what is considered the background of the image and what is considered an object. Here, this means that erosion will remove small 1-valued regions, while dilation will remove small 0-valued regions.
 
-Once this is done, regions are identified. This is done by taking each continuous area of a single value in the binary image, and assigning it a unique label\cite{skimage_measure_label}. From there, the lungs were identified as the 2 smallest regions. The seeds for the region-growing algorithm were then set as the middle point in that region (not centroid, but middle of the array). The region-growing algorithm is then used, obtaining segmentations of the lungs. Thresholding and closing where then again used to get smooth and continuous segmentations. This entire process is shown in Figure \ref{fig:ct_segmentation}.
+Once this is done, regions are identified. This is done by taking each continuous area of a single value in the binary image, and assigning it a unique label\cite{skimage_measure_label}. From there, the lungs were identified as the 2 smallest regions. The seeds for the region-growing algorithm were then set as the middle point in that region (not centroid, but middle of the array). The region-growing algorithm is then used, obtaining segmentations of the lungs. Thresholding and closing were then again used to get smooth and continuous segmentations. This entire process is shown in Figure \ref{fig:ct_segmentation}.
 
 \begin{figure}[htbp]
     \centering
@@ -172,7 +172,7 @@ Once this is done, regions are identified. This is done by taking each continuou
 
 \subsubsection{Using a custom implementation}
 
-For the final part of this exercise, a custom implementation of the same method is used to segment the coins. Custom code was only written for the Otsu thresholding and the region-growing algorithm, and the results are shown in Figure \ref{fig:CT_custom_segmentation}.
+For the final part of this exercise, a custom implementation of the same method is used to segment the CT scanned lungs. Custom code was only written for the Otsu thresholding and the region-growing algorithm, and the results are shown in Figure \ref{fig:CT_custom_segmentation}.
 
 \begin{figure}[htbp]
     \centering
@@ -181,7 +181,7 @@ For the final part of this exercise, a custom implementation of the same method 
     \label{fig:CT_custom_segmentation}
 \end{figure}
 
-As can be seen in Figure \ref{fig:CT_custom_segmentation}, the custom implementation gives very similar results. The Otsu thresholding algorithm was coded following the description of how to find the maximum between-class variance \cite{baeldung_otsu_segmentation}. The region-growing algorithm was also coded following the description of the algorithm\cite{baeldung_otsu_segmentation}, however the method was modified to apply a threshold on the normalised intensity difference between the current pixel and the seed pixel, rather than taking the region mean. This was done to keep the algortihm lightweight as the region grows.
+As can be seen in Figure \ref{fig:CT_custom_segmentation}, the custom implementation gives very similar results. The Otsu thresholding algorithm was coded following the description of how to find the maximum between-class variance \cite{baeldung_otsu_segmentation}. The region-growing algorithm was also coded following the description of the algorithm\cite{sbme_tutorials_cv}, however the method was modified to apply a threshold on the normalised intensity difference between the current pixel and the seed pixel, rather than taking the region mean. This was done to keep the algorithm lightweight as the region grows.
 
 \subsection{Image 2: \texttt{noisy\_flower.jpg}}
 
@@ -194,7 +194,7 @@ Here, the task was to segment purple tulips from an image of a Dutch tulip field
     \label{fig:flower_hsv}
 \end{figure}
 
-It can also be seen that, conveniently, the purple hue is close to the largest value on the spectrum, with the exception of red which is at both extremities. And looking at the histogram of the hue channel, with hue overlaid, one can see that using a single threshold may already be very helpful in segmenting the image (see \ref{fig:hsv_hist}). Applyin that threshold, the resulting image will be a noisy binary image. But by applying opening (erosion then dilation, see Sec. 1.1.1.) to the image, this removes the darker noise in lighter regions. A gaussian filter is then applied\cite[pp. 166-170]{gonzalez2002digital}, smoothing out the binary image's noise, and giving back a grayscale image.
+It can also be seen that, conveniently, the purple hue is close to the largest value on the spectrum, with the exception of red which is at both extremities. And looking at the histogram of the hue channel, with hue overlaid, one can see that using a single threshold may already be very helpful in segmenting the image (see Figure \ref{fig:hsv_hist}). Applying that threshold, the resulting image will be a noisy binary image. But by applying opening (erosion then dilation, see Sec. 1.1.1.) to the image, this removes the darker noise in lighter regions. A gaussian filter is then applied\cite[pp. 166-170]{gonzalez2002digital}, smoothing out the binary image's noise, and giving back a grayscale image.
 
 \begin{figure}[htbp]
     \centering
@@ -220,9 +220,9 @@ Finally, the main algorithm used for this image is the Chan-Vese segmentation al
 
 For this problem, the task was to segment specific coins from an image of antique coins, which has been corrupted with vertical black lines across the image. Specifically, the 1st coin of the 1st row, 2nd coin of the 2nd row, and so on until the 4th row. Here, the main challenge was dealing with the lines and then the lighter background at the top left of the image, which almost matched the lighter shade of the coin.
 
-The segmentation for this problem first made use of an inpainting algorithm \cite{skimage_inpaint_biharmonic}. This uses biharmonic functions, constructed using Lpalacinan and normal derivatives of the boundary data\cite{damelin2018surface}. Once the image is inpainted, the contrast of the image is increased using the scikit-image \texttt{exposure.rescale\_intensity} function. This function linearly scales the intensity of the image to a certain range, which can be set as the minimum and maximum values of the image\cite{skimage_rescale_intensity}. This is done to make the coins more distinguishable from the background.
+The segmentation for this problem first made use of an inpainting algorithm \cite{skimage_inpaint_biharmonic}. This uses biharmonic functions, constructed using Laplacian and normal derivatives of the boundary data\cite{damelin2018surface}. Once the image is inpainted, the contrast of the image is increased using the scikit-image \texttt{exposure.rescale\_intensity} function. This function linearly scales the intensity of the image to a certain range, which can be set as the minimum and maximum values of the image\cite{skimage_rescale_intensity}. This is done to make the coins more distinguishable from the background.
 
-The second part of the segmentation was to try and remove the background of the image, using a rolling-ball algorithm. This is akin to a filter as it uses kernels to define the shape of the object that is "rolled". For a sphere kernel, one can imagine creating a discretized surface where each square column represents a pixel, and having a ball roll on the underside of that surface. With sufficient radius, that sphere will not "fall up" in the peaks of the image, and the background will be estimated as the height of the apex of the ball\cite{skimage_rolling_ball}. With the background estimates, it can be subtracted from the image, making the segmentation of the coins easier.
+The second part of the segmentation was to try and remove the background of the image, using a rolling-ball algorithm. This is akin to a filter as it uses kernels to define the shape of the object that is "rolled". For a sphere kernel, one can imagine creating a discretized surface where each square column represents a pixel, and having a ball roll on the underside of that surface. With sufficient radius, that sphere will not "fall up" in the peaks of the image, and the background will be estimated as the height of the top of the ball\cite{skimage_rolling_ball}. With the background estimates, it can be subtracted from the image, making the segmentation of the coins easier.
 
 Third, K-means clustering is used to segment all the coins in the image. By setting the number of clusters to 2, the algorithm initializes two values between 0 and 255. It then assigns each pixel to the cluster with the closest mean value. This process is repeated iteratively until the cluster assignments no longer change, resulting in the image being divided into two regions\cite{sklearn_kmeans}. The coins are then labelled, and the chosen coins are isolated from those labels. The result of this process is shown for each coin in Figures \ref{fig:coin_7_segmentation}, \ref{fig:coin_16_segmentation}, \ref{fig:coin_23_segmentation}, and \ref{fig:coin_27_segmentation}.
 
@@ -258,13 +258,7 @@ Third, K-means clustering is used to segment all the coins in the image. By sett
 
 \section{Exercise 2.1}
 
-In this exercise, the solving of ill-posed inverse problems is done for a simple 1D example of fitting a straight line to noisy data. This will be done using a minimisation algorithm of the form:
-
-\begin{equation}
-    \min_{u} ||Au - f||_{l_{n}}
-\end{equation}
-
-Where A is the parameter matrix, u is the measured input, and $l_{n}$ describes the type of distance used to measure the error between the model and the data. Here, A is the vector $[a, b]$, where $a$ is the slope and $b$ is the intercept of the fitted line. And the two choices considered are $l_{1}$ and $l_{2}$ minimisation.
+In this exercise, the solving of ill-posed inverse problems is done for a simple 1D example of fitting a straight line to noisy data.
 
 \subsection{\texorpdfstring{$l_{1}$ and $l_{2}$ Minimisation}{l1 and l2 Minimisation}}
 
@@ -280,7 +274,7 @@ As defined, $l_{1}$ minimisation is the minimisation of the sum of the absolute 
 
 The $l_{1}$ minimisation problem is quite uncommon due to it not being differentiable, and resulting in the problem not having an analytical solution.
 
-In this problem, some noisy data was obtained from two files, \texttt{y\_line.txt} and \texttt{y\_outlier\_line.txt}, where the latter has the same data but with one outlier. The data was then fitted with a straight line using the two minimisation methods. For $l_{1}$, the \texttt{scipy.optimise.minimise} function was used using the Sequential Least Squares Programming (SLSQP) method. This is a way to solve the minimizing problem using linear programming, by replacing the original problem with a series of quadratic problems that are easier to solve\cite{mathse_slsqp}. Using this method, the fitted parameters were otbtained and are shown in Table \ref{tab:l1_fits}, and the plots of the fitted lines are shown in Figure \ref{fig:l1_fits}.
+In this problem, some noisy data was obtained from two files, \texttt{y\_line.txt} and \texttt{y\_outlier\_line.txt}, where the latter has the same data but with one outlier. The data was then fitted with a straight line using the two minimisation methods. For $l_{1}$, the \texttt{scipy.optimise.minimize} function was used using the Sequential Least Squares Programming (SLSQP) method. This is a way to solve the minimizing problem using linear programming, by replacing the original problem with a series of quadratic problems that are easier to solve\cite{mathse_slsqp}. Using this method, the fitted parameters were obtained and are shown in Table \ref{tab:l1_fits}, and the plots of the fitted lines are shown in Figure \ref{fig:l1_fits}.
 
 \begin{table}
     \begin{center}
@@ -405,7 +399,7 @@ With the undersampled signals the goal is now to reconstruct the original signal
 
 \subsection{The Iterative Soft Thresholding Algorithm}
 
-In order to reconstruct the original signal, the ISTA is used. This algorithm is an iterative method that solves the minimisation problem descirbed above by iteratively applying a soft thresholding function to the signal, with the addition of a data consistency constraint. The algorithm is shown in Algorithm 1.
+In order to reconstruct the original signal, the ISTA is used. This algorithm is an iterative method that solves the minimisation problem described above by iteratively applying a soft thresholding function to the signal, with the addition of a data consistency constraint. The algorithm is shown in Algorithm 1.
 
 \begin{definitionbox}{Algorithm 1: Iterative Soft Thresholding Algorithm}
     \begin{algorithmic}[1]
@@ -573,7 +567,7 @@ And it is clear that the gradient of $f(x)$ is 2-Lipschitz continuous, as one ca
     \sqrt{([x]_1 - [y]_1)^2 + 4([x]_2 - [y]_2)^2} \leq 2 \times \sqrt{([x]_1 - [y]_1)^2 + ([x]_2 - [y]_2)^2}
 \end{equation}
 
-since the squared terms are positive so multiplying both of them by 4 will result in a larger value than just multiplying one. More formally, the smallest L that satisfies this condition is given by the maximum eigenvalue of the hessian matrix of $f(x)$\cite[claim 5]{lecture12}:
+since the squared terms are positive so multiplying both of them by 4 will result in a larger value than just multiplying one. More formally, the smallest L that satisfies this condition is given by the maximum eigenvalue of the Hessian matrix of $f(x)$\cite[claim 5]{lecture12}:
 
 \begin{equation}
     \nabla^2 f(x) = \begin{bmatrix} 1 & 0 \\ 0 & 2 \end{bmatrix}
@@ -608,7 +602,7 @@ However, when applying the gradient descent algorithm, setting the learning rate
 
 \section{Exercise 3.2}
 
-In this exercise the 2 methods mentionned at the start of this chapter are compared. The image considered is the Shepp-Logan phantom, and is showm in Figure \ref{fig:fbp_reconstruction}, along with the image's sinogram and its filtered back-projection (FBP) reconstruction. In both methdos, the FBP reconstruction will be used as initialization.
+In this exercise the 2 methods mentioned at the start of this chapter are compared. The image considered is the Shepp-Logan phantom, and is shown in Figure \ref{fig:fbp_reconstruction}, along with the image's sinogram and its filtered back-projection (FBP) reconstruction. In both methods, the FBP reconstruction will be used as initialization.
 
 \begin{figure}[htbp]
     \centering
@@ -617,7 +611,7 @@ In this exercise the 2 methods mentionned at the start of this chapter are compa
     \label{fig:fbp_reconstruction}
 \end{figure}
 
-The first method implements the ADMM algorithm to solve a Total Variation (TV) regularized reconstruction problem for the Shepp-Logan phantom image. The ADMM algorithm relies on the use of a variable splitting method, decomposing the problem into smaller subproblems, and then alternatingly updating these\cite{boyd2011distributed}. The TV-regularized reconstruction problem is given by:
+The first method implements the ADMM algorithm to solve a Total Variation (TV) regularized reconstruction problem for the Shepp-Logan phantom image. The ADMM algorithm relies on the use of a variable splitting method, decomposing the problem into smaller subproblems, and then alternatingly updating them\cite{boyd2011distributed}. The TV-regularized reconstruction problem is given by:
 
 \begin{equation}
     \min_{u} ||y - Ax||^2_2 + \lambda ||\nabla x||_1
@@ -651,7 +645,73 @@ As can be clearly seen, the LGD does a much better job at reducing the FBP's noi
 
 \section{README}
 
-\subsection{Extra Plots}
+\subsection{Image Analysis Coursework}
+
+\subsubsection{Description}
+This repository contains the code and written report for the Image Analysis Coursework. The aim was to study 3 aspects of image analysis: Segmentation, Inverse problems and multiresolution analysis, and solving inverse problems using model vs data driven reconstructions
+
+\subsubsection{Contents}
+
+Inside this \texttt{tmb76/} directory, there are a few sub-directories one can explore. There's the code directory (\texttt{src/}), which contains all the code used for the project. An important note is that the code will give outputs in the command line but also store the plots in a \texttt{Plots/} directory which will be created as the first code file is run. So if there is no \texttt{Plots/} directory in the repository yet, running the code once should lead to creating one. Then there is the \texttt{Report/} directory, which contains the LaTeX file for the report, as well as the pdf version of it, along with the references \texttt{.bib} file. Finally, there is a \texttt{data/} directory which holds images and data files for the code.
+More importantly, there are an \texttt{environment.yml} and \texttt{Dockerfile} files, which one is advised to use.
+
+\subsubsection{How to run the code}
+For permissions reasons, the \texttt{Dockerfile} is not set up to pull the repository directly as it builds the image. Therefore, one must first download this repository to their local machine and then are free to build the Docker image from the \texttt{Dockerfile}.
+
+To run the solver on a Docker container, one first has to build the image and run the container. This can be done as follows:
+
+\begin{lstlisting}[language=bash]
+$ docker build -t ia_coursework .
+$ docker run --rm -ti ia_coursework
+\end{lstlisting}
+
+The \texttt{ia\_coursework} is not a strict instruction, it can be set to any other name the user may prefer.
+
+If there is a need to get the plots back on the local machine, the second line above can be ran without the \texttt{--rm} and can also set the container name using \texttt{--name=container\_name} (any valid name is fine). From there, run all the code as instructed below. Once all desired outputs and plots have been obtained. One can exit the container and then run:
+
+\begin{lstlisting}[language=bash]
+$ docker cp docker cp container_name:/ia_coursework/Plots ./Plots
+\end{lstlisting}
+
+The \texttt{Plots/} directory will get copied into the local folder the container was ran from.
+
+As you run this, the Docker image will get built and the container ran, providing the user with a bash terminal-like interface where the solver code can be run as follows:
+
+- For Module 1 on segmentation:
+\begin{lstlisting}[language=bash]
+$ python src/mod_1_*.py
+\end{lstlisting}
+
+where \texttt{*} can be either \texttt{coins}, \texttt{CT\_custom}, \texttt{CT}, or \texttt{tulips}.
+
+- For Module 2 on Inverse Problems and multiresolution analysis
+\begin{lstlisting}[language=bash]
+$ python src/mod_2_q_*.py
+\end{lstlisting}
+
+where \texttt{*} can be either \texttt{1}, \texttt{2}, or \texttt{3}.
+
+- For Module 3, on solving inverse problems with different methods
+\begin{lstlisting}[language=bash]
+$ python src/mod_3_*.py
+\end{lstlisting}
+
+where \texttt{*} can be either \texttt{q\_1} or \texttt{LGD}. If the \texttt{LGD} file is run, a \texttt{skip\_training} argument must be specified in the command line: a boolean (True or False). If set to True, the code will load the trained model state and predict the reconstruction immediately, rather than training the neural network from scratch. Each contain the code to get the results those specific tasks/parts of the coursework.
+
+Note on time: Running the file should take close to 2 minutes. Running the file should take longer, closer to 5-6 minutes. This is based on running all of these on a MacBook Air M2 (2022, Ventura 13.2.1), with 8 GB of Memory, so this may be slower on a container.
+
+
+\subsubsection{Further development}
+
+If one wishes to further develop this code, such as adding more algorithms to try, when the image is built, git is installed and initialized and the pre-commit hooks are installed.
+
+\subsubsection{Use of Generative AI}
+
+GitHub Copilot's autocompletion feature was used in coding the project, when writing docstrings for the functions, though sometimes adding elements ourselves, and for repetitive parts of the code.
+ChatGPT was also used to help in debugging the code, by providing the traceback as a prompt when an error was difficult to understand, asking to explain what the error refers to. Additionally, it was used to give suggestions on what package/function could be used for l1 minimization for which it recommended the \texttt{scipy.optimize} library. It was used for clarification on the \texttt{np.random.permutation} library. It was used when debugging issues with loading dependencies, by looking at the coursework given notebook and the commands used to install dependencies on the virtual environment to see differences and what could be the reason: got suggestion to look into what channels were used to load the dependencies.
+
+
+\section{Extra Plots}
 
 \begin{figure}[htbp]
     \centering
