@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['data_5ffit_0',['data_fit',['../namespacemod__3___l_g_d.html#aaa8172cc42f03c997561714d591f0076',1,'mod_3_LGD']]],
+  ['data_5fnp_1',['data_np',['../namespacemod__3___l_g_d.html#afa258f6d386de85fd7f11abc9e4986db',1,'mod_3_LGD']]],
+  ['data_5fodl_2',['data_odl',['../namespacemod__3___l_g_d.html#a2fb4a58b5d5d930db1e94d40a21588ae',1,'mod_3_LGD']]],
+  ['data_5frange_3',['data_range',['../namespacemod__3___l_g_d.html#abf6de13a3ef3a78c20b898e34074197b',1,'mod_3_LGD']]],
+  ['daub_4',['daub',['../namespacemod__2__q__3.html#a4864a92522a741d8f0bf1ad87e39c8de',1,'mod_2_q_3']]],
+  ['device_5',['device',['../namespacemod__3___l_g_d.html#a8e64242c0f7265e3d3091ee33d89c912',1,'mod_3_LGD.device'],['../namespaceneur__nets.html#a2b81aa2abc138ebda01bffd8d0196eb9',1,'neur_nets.device']]],
+  ['diag_6',['diag',['../namespacemod__2__q__3.html#aa1892e8150ab60b348afa89d497ae323',1,'mod_2_q_3']]],
+  ['diag_5f10_7',['diag_10',['../namespacemod__2__q__3.html#aed02d785ab4e74b92dca36e603980e40',1,'mod_2_q_3']]],
+  ['diag_5f10_5f2_8',['diag_10_2',['../namespacemod__2__q__3.html#ad49ea9e77973ea976181a2bae0df6793',1,'mod_2_q_3']]],
+  ['diag_5f15_9',['diag_15',['../namespacemod__2__q__3.html#affc36b66553e757797c55111ddf7b7e8',1,'mod_2_q_3']]],
+  ['diag_5f15_5f2_10',['diag_15_2',['../namespacemod__2__q__3.html#a5806e7f989388f2ec182d383f35af50b',1,'mod_2_q_3']]],
+  ['diag_5f20_11',['diag_20',['../namespacemod__2__q__3.html#a5801f9a05650e7422ceb718b77e91cf8',1,'mod_2_q_3']]],
+  ['diag_5f20_5f2_12',['diag_20_2',['../namespacemod__2__q__3.html#a56fe9c1076f0f5646dcf82f9e7cd5e89',1,'mod_2_q_3']]],
+  ['diag_5f2_5f5_13',['diag_2_5',['../namespacemod__2__q__3.html#abc89262814fe164b1cc355173296b77d',1,'mod_2_q_3']]],
+  ['diag_5f2_5f5_5f2_14',['diag_2_5_2',['../namespacemod__2__q__3.html#a7977d930d3c0e0577231d4c0ba9c57d9',1,'mod_2_q_3']]],
+  ['diag_5f5_15',['diag_5',['../namespacemod__2__q__3.html#a82dc1e02485d15a431414f2c8a5c1b23',1,'mod_2_q_3']]],
+  ['diag_5f5_5f2_16',['diag_5_2',['../namespacemod__2__q__3.html#a1a0c8e94a33ef77e5bd4079c1b0a39bd',1,'mod_2_q_3']]]
+];

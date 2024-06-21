@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['pad_0',['pad',['../classneur__nets_1_1prox__net.html#ae982e4847537689c60fda17e43443554',1,'neur_nets::prox_net']]],
+  ['phantom_5fnp_1',['phantom_np',['../namespacemod__3___l_g_d.html#a8e814d693f9345bc7006827190acffb9',1,'mod_3_LGD']]],
+  ['phantom_5fodl_2',['phantom_odl',['../namespacemod__3___l_g_d.html#a1fbb0d91ffd383826da09baf398266a9',1,'mod_3_LGD']]],
+  ['plot_5fadmm_5ffbp_3',['plot_ADMM_FBP',['../namespacemod__3___l_g_d.html#ac7dc5aa9e7c6fb9053ba25c1280e3c42',1,'mod_3_LGD']]],
+  ['plot_5fadmm_5ffbp_5flgd_4',['plot_ADMM_FBP_LGD',['../namespacemod__3___l_g_d.html#a9dc0e976247ed0a3d927f88bcd417529',1,'mod_3_LGD']]],
+  ['plot_5fdaubechies_5',['plot_daubechies',['../namespaceplot__funcs.html#a911ca68773f4d7d95dfb7303e0d56da5',1,'plot_funcs']]],
+  ['plot_5fdir_6',['plot_dir',['../namespacemod__2__q__2.html#a6ed55da306c46ec492b4b21bc0ed373c',1,'mod_2_q_2.plot_dir'],['../namespacemod__1___c_t__custom.html#ac7d356d7266aa4488e46e2c1a2632129',1,'mod_1_CT_custom.plot_dir'],['../namespacemod__1__tulips.html#a9cc1e86c0871f147f1d9345133f54f75',1,'mod_1_tulips.plot_dir'],['../namespacemod__3__q__1.html#adac6d6df0a699290272485d43956d2ad',1,'mod_3_q_1.plot_dir'],['../namespacemod__1___c_t.html#a52a40bda85a319851bc20c48535ee3a1',1,'mod_1_CT.plot_dir']]],
+  ['plot_5ffitted_5flines_7',['plot_fitted_lines',['../namespaceplot__funcs.html#a7724da306b113c19f8bb34c2ceca1e9d',1,'plot_funcs']]],
+  ['plot_5ffuncs_8',['plot_funcs',['../namespaceplot__funcs.html',1,'']]],
+  ['plot_5ffuncs_2epy_9',['plot_funcs.py',['../plot__funcs_8py.html',1,'']]],
+  ['plot_5fgrd_5ftruth_5ffbp_10',['plot_grd_truth_FBP',['../namespacemod__3___l_g_d.html#abe4a323134a2774a7974e09933afd768',1,'mod_3_LGD']]],
+  ['plot_5fhue_5fhist_11',['plot_hue_hist',['../namespaceplot__funcs.html#afad229c0a5e1e9c262138cc0afaea5ce',1,'plot_funcs']]],
+  ['plot_5freconstruct_5fimage_12',['plot_reconstruct_image',['../namespaceplot__funcs.html#a5d84dc673fc15df4ed736ccfd35ef6d4',1,'plot_funcs']]],
+  ['plot_5friverside_13',['plot_riverside',['../namespaceplot__funcs.html#a3b89b4102bf8794828504ff86fad23b0',1,'plot_funcs']]],
+  ['plot_5fsegmented_5fcoin_14',['plot_segmented_coin',['../namespacemod__1__coins.html#ac66049cfad4bfd15eaef46f864c72354',1,'mod_1_coins']]],
+  ['plot_5fsignal_5fvector_15',['plot_signal_vector',['../namespaceplot__funcs.html#af29072c5f41fb89b9ff11d9d3736deea',1,'plot_funcs']]],
+  ['plot_5ftulips_5fhsv_16',['plot_tulips_hsv',['../namespaceplot__funcs.html#a39b58b543de53e4bf4fbb740e4bb7b78',1,'plot_funcs']]],
+  ['plots_5fdir_17',['plots_dir',['../namespacemod__3__q__1.html#a2538996562a386585b596f4ceeaf7572',1,'mod_3_q_1.plots_dir'],['../namespacemod__2__q__2.html#ab7b4654322f476d26cefd1fcbf0c05db',1,'mod_2_q_2.plots_dir'],['../namespacemod__1___c_t.html#a2ab937134d00b81422eaa9c1bc6f62bd',1,'mod_1_CT.plots_dir'],['../namespacemod__1___c_t__custom.html#ac72b54c54917624deb23f57e627a9952',1,'mod_1_CT_custom.plots_dir'],['../namespacemod__1__tulips.html#a5d82c3a913e5c65ce19ffba0504c10f7',1,'mod_1_tulips.plots_dir']]],
+  ['prox_18',['prox',['../classneur__nets_1_1_l_g_d__net.html#a2810f3d0e568321a5c0578bdca562c09',1,'neur_nets::LGD_net']]],
+  ['prox_5fnet_19',['prox_net',['../classneur__nets_1_1prox__net.html',1,'neur_nets']]],
+  ['psnr_5ffbp_20',['psnr_fbp',['../namespacemod__3___l_g_d.html#a3ed91ba2c9d08f01747e395418657416',1,'mod_3_LGD']]],
+  ['psnr_5flgd_21',['psnr_lgd',['../namespacemod__3___l_g_d.html#a0ccff81a158c7b0844b28db78633c961',1,'mod_3_LGD']]],
+  ['psnr_5ftv_22',['psnr_tv',['../namespacemod__3___l_g_d.html#a3b5e8e55ab11fc52b304c4039a3a9f14',1,'mod_3_LGD']]]
+];
