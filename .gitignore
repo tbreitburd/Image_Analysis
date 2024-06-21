@@ -7,3 +7,5 @@ Report/*
 !Report/Report.tex
 
 .DS_Store
+
+docs/latex/
