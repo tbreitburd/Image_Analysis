@@ -2,7 +2,15 @@
 @brief Python script containing all plotting functions
 for the Image Analysis Coursework
 
-@details List of functions
+@details List of functions:
+- plot_fitted_lines: Plot the fitted lines for the given parameters
+- plot_signal_vector: Plot the signal vector
+- plot_riverside: Plot the riverside image
+- plot_daubechies: Plot the Daubechies wavelet coefficients
+- plot_reconstruct_image: Plot the reconstructed image
+- plot_tulips_hsv: Plot the Hue, Saturation, and Value channels of the tulips image
+- plot_hue_hist: Plot the histogram of the hue channel
+
 
 @author T. Breitburd on 04/06/2024"""
 

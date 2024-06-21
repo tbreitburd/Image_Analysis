@@ -2,7 +2,12 @@
 
 @brief Python script for question 2 of module 2.
 
-@details This script contains code to...
+@details This script contains code to perform the following tasks:
+- Generate a vector with 10 non-zero entries.
+- Add random Gaussian noise to the vector.
+- Uniformly and randomly undersample the vector and compute the zero-filled inverse FT.
+- Reconstruct the signal using the Iterative Soft Thresholding Algorithm (ISTA).
+- Plot the original, undersampled, and reconstructed signals.
 
 @author T. Breitburd on 09/06/2024"""
 
