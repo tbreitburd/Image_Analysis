@@ -14,8 +14,8 @@ For permissions reasons, the ```Dockerfile``` is not set up to pull the reposito
 To run the solver on a Docker container, one first has to build the image and run the container. This can be done as follows:
 
 ```bash
-$ docker build -t IA_coursework .
-$ docker run --rm -ti IA_coursework
+$ docker build -t ia_coursework .
+$ docker run --rm -ti ia_coursework
 ```
 
 The ```IA_coursework``` is not a strict instruction, it can be set to any other name the user may prefer.
