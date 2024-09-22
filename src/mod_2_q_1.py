@@ -114,3 +114,16 @@ plot_fitted_lines(
     "L2 Fitted line for data with outliers",
     "l2_outlier_data.png",
 )
+
+# Get R-squared for both fits of the noisy data
+r2_l2 = model_noise.score(x.reshape(-1, 1), y_line)
+
+print("R-squared for L2 fit of noisy data:", r2_l2)
+
+# Get fitted line for L1 fit of noisy data
+y_line_l1 = result_noise.x[0] * x + result_noise.x[1]
+
+# Get R-squared for L1 fit of noisy data
+r2_l1 = 1 - np.sum((y_line - y_line_l1) ** 2) / np.sum((y_line - np.mean(y_line)) ** 2)
+
+print("R-squared for L1 fit of noisy data:", r2_l1)
